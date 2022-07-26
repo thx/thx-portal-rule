@@ -1,0 +1,21 @@
+{
+  "webpack": {
+    "entry": {
+      "RuleEditor": "./src/index.tsx"
+    },
+    "output": {
+      "path": "./build/umd",
+      "library": "[name]",
+      "libraryTarget": "umd",
+      "filename": "[name].js",
+      "auxiliaryComment": "Meaningless"
+    },
+    "externals": {
+      "react": "React",
+      "react-dom": "ReactDOM",
+      "styled-components": "styled",
+      "@alifd/next": "Next"
+    },
+    "devServer": false
+  }
+}
