@@ -1,8 +1,47 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Box, Button, Select } from '@alifd/next'
-import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel } from './types/index'
+import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRelation } from './types/index'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { uuid } from './shared'
+
+export function fixContent (content: IRuleGroupNode) {
+  let changed = false
+  if (!content) {
+    content = {
+      id: uuid(),
+      type: 'GROUP_EXPRESSION'
+    }
+    changed = true
+  }
+  if (!content.id) {
+    content.id = uuid()
+    changed = true
+  }
+  if (!content.type) {
+    content.type = 'GROUP_EXPRESSION'
+    changed = true
+  }
+  if (!content.relation) {
+    content.relation = IRelation.AND
+    changed = true
+  }
+  if (!content.children || !content.children.length) {
+    content.children = [
+      {
+        id: uuid(),
+        type: 'CONDITION_EXPRESSION',
+        left: {
+          type: 'MODEL'
+        },
+        right: {
+          type: 'LITERAL'
+        }
+      }
+    ]
+    changed = true
+  }
+  return { content, changed }
+}
 
 interface IRuleEditorContext {
   models: IRuleModel[];
@@ -17,6 +56,16 @@ export const WidthAutoSelect = styled(Select)`
   min-width: auto;
   .next-select-inner {
     min-width: auto;
+  }
+`
+export const RelationSelect = styled(WidthAutoSelect)`
+  .next-select-inner {
+    background-color: var(--color-warning-2);
+  }
+`
+export const OperatorSelect = styled(WidthAutoSelect)`
+  .next-select-inner {
+    background-color: var(--color-notice-1);
   }
 `
 
@@ -37,12 +86,72 @@ export function tree2map (node: IRuleGroupNode, mapped:{ [id: string]: IRuleCond
   return mapped
 }
 
-export function GroupNodeRelationColumn ({ style, node }: { style?: any; node: IRuleGroupNode; }) {
+// backgroundColor: `var(--color-line1-${depth % 4 + 1})`
+// 分组 - 外层
+export const RuleGroupNodeWrapper = styled.div`
+  /* padding: var(--s-2) 0 var(--s-2) var(--s-2); */
+  /* background-color: var(--color-white); */
+  /* ${(props: any) => props.hasBorder && css`
+    border: 1px solid #E6E6E6;
+  `} */
+  /* ${(props: any) => props.hasBackground && css`
+    background-color: var(--color-line1-1);
+  `} */
+`
+
+// 分组 - 关系 - 外层
+export const RuleGroupNodeRelationColumnWrapper = styled.div`
+  display: flex;
+  /* padding: var(--s-2); */
+  /* background-color: var(--color-white); */
+`
+// 分组 - 内容 - 外层
+export const RuleGroupNodeBodyColumnWrapper = styled.div`
+  flex: 1;
+  /* background-color: var(--color-white); */
+`
+
+const Bracket = styled.div`
+  position: relative;
+  flex: auto;
+  align-self: flex-end;
+  width: 38.2%;
+  border-left: 1px solid #E6E6E6;
+  &:before {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: var(--s-2, 8px);
+    height: var(--s-2, 8px);
+    border-radius: 50%;
+    border: 1px solid rgba(31,56,88,.4);
+    background-color: var(--color-white);
+  }
+`
+
+const BracketTop = styled(Bracket)`
+  border-top: 1px solid #E6E6E6;
+  &:before {
+    top: calc(var(--s-2, 8px) / -2);
+  }
+`
+
+const BracketBottom = styled(Bracket)`
+  border-bottom: 1px solid #E6E6E6;
+  &:before {
+    bottom: calc(var(--s-2, 8px) / -2);
+  }
+`
+
+export function RuleGroupNodeRelationColumn ({ style, node }: { style?: any; node: IRuleGroupNode; }) {
   const { onChange } = useContext(RuleEditorContext)
   return <Box direction='column' align='center' style={style}>
-    <Box flex={1} style={{ width: '50%', borderLeft: '1px solid #E6E6E6', borderTop: '1px solid #E6E6E6', alignSelf: 'flex-end' }} />
-    <Box direction='column' align='center' spacing={4}>
-      <WidthAutoSelect
+    {/* 1 */}
+    {/* <Box flex={1} style={{ width: '38.2%', borderLeft: '1px solid #E6E6E6', borderTop: '1px solid #E6E6E6', alignSelf: 'flex-end' }} /> */}
+    <BracketTop />
+    {/* 2 */}
+    <Box direction='column' align='center' spacing={0} style={{ position: 'relative' }}>
+      <RelationSelect
         defaultValue={node.relation}
         dataSource={[
           { label: '且', value: 'AND' },
@@ -65,15 +174,30 @@ export function GroupNodeRelationColumn ({ style, node }: { style?: any; node: I
           })
           onChange()
         }}
-        style={{ borderRadius: 100, width: 'var(--btn-size-m-height, 28px)' }}
+        size='small'
+        style={{
+          position: 'absolute',
+          left: 'var(--s-1, 4px)',
+          top: 'var(--s-9, 36px)',
+          width: 'var(--s-6, 24px)',
+          height: 'var(--s-6, 24px)',
+          borderRadius: 100
+        }}
       >+</Button>
     </Box>
-    <Box flex={1} style={{ width: '50%', borderLeft: '1px solid #E6E6E6', borderBottom: '1px solid #E6E6E6', alignSelf: 'flex-end' }} />
+    {/* 3 */}
+    {/* <Box flex={1} style={{ width: '38.2%', borderLeft: '1px solid #E6E6E6', borderBottom: '1px solid #E6E6E6', alignSelf: 'flex-end' }} /> */}
+    <BracketBottom />
   </Box>
 }
 
-export const GroupNodeBodyColumn = styled.div`
-  flex: 1;
+// 条件 - 外层
+export const RuleConditionNodeWrapper = styled.div`
+  padding: var(--s-2);
+  background-color: var(--color-fill1-1);
+  &:hover {
+    background-color: var(--color-fill1-4);
+  }
 `
 
 interface IModelAndFieldProps {
@@ -81,6 +205,7 @@ interface IModelAndFieldProps {
   expression: IMemberExpression;
 }
 
+// 条件 - 模型 & 字段
 export function ModelAndField ({ models: remoteModels = [], expression, ...extra }: IModelAndFieldProps) {
   const { onChange } = useContext(RuleEditorContext)
 
