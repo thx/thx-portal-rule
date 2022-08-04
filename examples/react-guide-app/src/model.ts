@@ -28,7 +28,13 @@ export const MOCK_MODEL_LIST: IRuleModel[] = mock({
       }
     ]
   }]
-}).list
+}).list.map((model: IRuleModel) => ({
+  ...model,
+  fields: model.fields.map(field => ({
+    ...field,
+    name: `${field.setter} ${field.name}`
+  }))
+}))
 
 export const MOCK_CONTENT: IRuleGroupNode = {
   id: uuid(),

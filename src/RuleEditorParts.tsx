@@ -6,7 +6,8 @@ import { uuid } from './shared'
 import moment from 'moment'
 import { RangeProps } from '@alifd/next/types/range'
 import { InputProps } from '@alifd/next/types/input'
-import { DatePickerProps } from '@alifd/next/types/date-picker'
+import { DatePickerProps, MonthPickerProps, RangePickerProps, YearPickerProps } from '@alifd/next/types/date-picker'
+import { NumberPickerProps } from '@alifd/next/types/number-picker'
 moment.locale('zh-cn')
 
 export function fixContent (content: IRuleGroupNode) {
@@ -94,7 +95,11 @@ export function tree2map (node: IRuleGroupNode, mapped:{ [id: string]: IRuleCond
 
 // backgroundColor: `var(--color-line1-${depth % 4 + 1})`
 // 分组 - 外层
-export const RuleGroupNodeWrapper = styled.div`
+interface IRuleGroupNodeWrapperProps {
+  hasBackground?: boolean;
+  hasBorder?: boolean;
+}
+export const RuleGroupNodeWrapper = styled.div < IRuleGroupNodeWrapperProps > `
   /* padding: var(--s-2) 0 var(--s-2) var(--s-2); */
   /* background-color: var(--color-white); */
   /* ${(props: any) => props.hasBorder && css`
@@ -287,15 +292,15 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
 
 const SETTER_MAP = {
   BoolSetter: Switch,
-  NumberSetter: NumberPicker,
-  RangeSetter: (props: RangeProps) => <Range style={{ width: 120 }} {...props} />,
+  NumberSetter: (props: NumberPickerProps) => <NumberPicker style={{ width: 120 }} {...props} />,
+  RangeSetter: (props: RangeProps) => <Range style={{ width: 120, padding: '0 calc(var(--range-size-m-slider-hw) / 2)' }} {...props} />,
   TextSetter: (props: InputProps) => <Input style={{ width: 120 }} {...props} />,
-  DateSetter: DatePicker,
+  DateSetter: (props: DatePickerProps) => <DatePicker style={{ width: 120 }} {...props} />,
   DateTimeSetter: (props: DatePickerProps) => <DatePicker showTime {...props} />,
-  YearSetter: DatePicker.YearPicker,
-  MonthSetter: DatePicker.MonthPicker,
+  YearSetter: (props: YearPickerProps) => <DatePicker.YearPicker style={{ width: 120 }} {...props} />,
+  MonthSetter: (props: MonthPickerProps) => <DatePicker.MonthPicker style={{ width: 120 }} {...props} />,
   RangeDateSetter: DatePicker.RangePicker,
-  RangeDateTimeSetter: (props: DatePickerProps) => <DatePicker.RangePicker showTime {...props} />,
+  RangeDateTimeSetter: (props: RangePickerProps) => <DatePicker.RangePicker showTime {...props} />,
   TimeSetter: TimePicker
 }
 
