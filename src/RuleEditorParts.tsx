@@ -1,8 +1,13 @@
 import styled, { css } from 'styled-components'
-import { Box, Button, Select } from '@alifd/next'
+import { Box, Button, DatePicker, Input, NumberPicker, Range, Select, Switch, TimePicker } from '@alifd/next'
 import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRelation } from './types/index'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { uuid } from './shared'
+import moment from 'moment'
+import { RangeProps } from '@alifd/next/types/range'
+import { InputProps } from '@alifd/next/types/input'
+import { DatePickerProps } from '@alifd/next/types/date-picker'
+moment.locale('zh-cn')
 
 export function fixContent (content: IRuleGroupNode) {
   let changed = false
@@ -277,4 +282,64 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
       autoWidth={false}
     />
   </Box>
+}
+
+const SETTER_MAP = {
+  BoolSetter: Switch,
+  NumberSetter: NumberPicker,
+  RangeSetter: (props: RangeProps) => <Range style={{ width: 120 }} {...props} />,
+  TextSetter: (props: InputProps) => <Input style={{ width: 120 }} {...props} />,
+  DateSetter: DatePicker,
+  DateTimeSetter: (props: DatePickerProps) => <DatePicker showTime {...props} />,
+  YearSetter: DatePicker.YearPicker,
+  MonthSetter: DatePicker.MonthPicker,
+  RangeDateSetter: DatePicker.RangePicker,
+  RangeDateTimeSetter: (props: DatePickerProps) => <DatePicker.RangePicker showTime {...props} />,
+  TimeSetter: TimePicker
+}
+
+export function LiteralSetter ({ node } :{ node: IRuleConditionNode }) {
+  const { models, onChange } = useContext(RuleEditorContext)
+  const { left, right } = node
+
+  const [leftModel, setLeftModel] = useState<IRuleModel>()
+  useEffect(() => {
+    if (!models) return
+    setLeftModel(
+      models.find(item => item.id === left.modelId)
+    )
+  }, [models, left.modelId])
+  const [leftField, setLeftField] = useState<IRuleField>()
+  useEffect(() => {
+    if (!leftModel) return
+    setLeftField(
+      leftModel.fields.find(item => item.id === left.fieldId)
+    )
+  }, [leftModel, left.fieldId])
+
+  if (!leftField) return null
+
+  const { setter, setterProps } = leftField
+  const extraProps = {
+    defaultValue: right.value,
+    onChange: (value) => {
+      right.value = value
+      onChange()
+    }
+  }
+  let nextSetter: ReactNode
+  if (setter) {
+    if (typeof setter === 'string') {
+      const SetterComponent: any = SETTER_MAP[setter.trim()]
+      nextSetter = <SetterComponent {...setterProps} {...extraProps} />
+    } else {
+      nextSetter = React.cloneElement(setter, extraProps)
+    }
+  } else {
+    // 默认
+    const SetterComponent: any = SETTER_MAP.TextSetter
+    nextSetter = <SetterComponent {...setterProps} {...extraProps} />
+  }
+
+  return nextSetter
 }

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Box, Button, Icon, Input } from '@alifd/next'
 import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP, uuid } from './shared'
-import { RuleEditorContext, tree2map, ModelAndField, RuleGroupNodeRelationColumn, WidthAutoSelect, RuleGroupNodeBodyColumnWrapper, fixContent, RuleGroupNodeWrapper, RuleGroupNodeRelationColumnWrapper, RuleConditionNodeWrapper, OperatorSelect } from './RuleEditorParts'
+import { RuleEditorContext, tree2map, ModelAndField, RuleGroupNodeRelationColumn, WidthAutoSelect, RuleGroupNodeBodyColumnWrapper, fixContent, RuleGroupNodeWrapper, RuleGroupNodeRelationColumnWrapper, RuleConditionNodeWrapper, OperatorSelect, LiteralSetter } from './RuleEditorParts'
 import { IRuleConditionNode, IRuleGroupNode, IRelation, IRuleModel } from './types'
 // Program Expression left right operator
 // Rule / condition
@@ -37,13 +37,11 @@ function RuleConditionNode ({ node } :{ node: IRuleConditionNode }) {
       />
       {/* 4. 右侧 字面量 */}
       {right?.type === 'LITERAL' &&
-        <Input defaultValue={right.value} style={{ width: 120 }}
-          onChange={(value) => {
-            right.value = value
-            onChange()
-          }}
-        />
+        <Box align='center' justify='center'>
+          <LiteralSetter node={node} />
+        </Box>
       }
+      
       {/* 4. 右侧 模型 + 字段 */}
       {right?.type === 'MODEL' && (
         <ModelAndField models={models} expression={right} />

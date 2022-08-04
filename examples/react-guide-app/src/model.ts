@@ -19,11 +19,12 @@ export const MOCK_MODEL_LIST: IRuleModel[] = mock({
     'id|1000-9999': 1,
     name: '模型@cword(5)',
     coee: '@word(5)',
-    'fields|10': [
+    'fields|20': [
       {
         'id|1000-9999': 1,
         name: '字段@cword(5)',
-        coee: '@word(5)'
+        coee: '@word(5)',
+        'setter|+1': ['BoolSetter', 'NumberSetter', 'RangeSetter', 'TextSetter', 'DateSetter', 'DateTimeSetter', 'YearSetter', 'MonthSetter', 'RangeDateSetter', 'RangeDateTimeSetter', 'TimeSetter']
       }
     ]
   }]

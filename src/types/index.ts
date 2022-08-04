@@ -1,6 +1,8 @@
 /* eslint-disable no-use-before-define */
 /// <reference types="react" />
 
+import React from 'react'
+
 /**
  *
  */
@@ -36,7 +38,7 @@ export enum IRuleConditionOperator {
 
 export interface ILiteralExpression {
   type: 'LITERAL';
-  value?: string;
+  value?: string | any;
 }
 
 export interface IMemberExpression {
@@ -45,6 +47,7 @@ export interface IMemberExpression {
   modelName?: string;
   fieldId?: number;
   fieldName?: string;
+  value?: string | any;
 }
 
 export interface IRuleGroupNode {
@@ -78,4 +81,10 @@ export interface IRuleField {
   id: number;
   name: string;
   code: string;
+  /** 配置项的设置器 */
+  setter?: 'BoolSetter' | 'NumberSetter' | 'RangeSetter' | 'TextSetter'
+    | 'DateSetter' | 'DateTimeSetter' | 'YearSetter' | 'MonthSetter' | 'RangeDateSetter' | 'RangeDateTimeSetter' | 'TimeSetter'
+    | React.ReactElement;
+  /** 针对设置器的配置 */
+  setterProps?: { [key: string]: any; };
 }
