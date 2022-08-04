@@ -54,6 +54,7 @@ interface IRuleEditorContext {
     [id: string]: IRuleConditionNode | IRuleGroupNode
   };
   onChange: (nextContent?: any) => void;
+  maxDepth?: number;
 }
 export const RuleEditorContext = createContext<IRuleEditorContext>(undefined)
 

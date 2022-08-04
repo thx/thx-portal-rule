@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Box, Button, Icon, Input } from '@alifd/next'
+import { Box, Button, Icon } from '@alifd/next'
 import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP, uuid } from './shared'
 import { RuleEditorContext, tree2map, ModelAndField, RuleGroupNodeRelationColumn, WidthAutoSelect, RuleGroupNodeBodyColumnWrapper, fixContent, RuleGroupNodeWrapper, RuleGroupNodeRelationColumnWrapper, RuleConditionNodeWrapper, OperatorSelect, LiteralSetter } from './RuleEditorParts'
 import { IRuleConditionNode, IRuleGroupNode, IRelation, IRuleModel } from './types'
 // Program Expression left right operator
 // Rule / condition
 
-function RuleConditionNode ({ node } :{ node: IRuleConditionNode }) {
-  const { models, mapped, onChange } = useContext(RuleEditorContext)
+function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; depth?: number; }) {
+  const { models, mapped, onChange, maxDepth } = useContext(RuleEditorContext)
   const { left, right, operator } = node
 
   return <RuleConditionNodeWrapper>
@@ -41,7 +41,7 @@ function RuleConditionNode ({ node } :{ node: IRuleConditionNode }) {
           <LiteralSetter node={node} />
         </Box>
       }
-      
+
       {/* 4. 右侧 模型 + 字段 */}
       {right?.type === 'MODEL' && (
         <ModelAndField models={models} expression={right} />
@@ -65,34 +65,36 @@ function RuleConditionNode ({ node } :{ node: IRuleConditionNode }) {
         }}
       ><Icon type='add' /></Button>
       {/* 5.2 增加子级 */}
-      <Button
-        onClick={() => {
-          const child = node
-          const parent = mapped[mapped[child.id].parentId]
-          if (parent.type === 'GROUP_EXPRESSION') {
-            const childIndex = parent.children.indexOf(child)
-            const nextGroup: IRuleGroupNode = {
-              id: uuid(),
-              type: 'GROUP_EXPRESSION',
-              relation: IRelation.AND,
-              children: []
-            }
-            child.parentId = nextGroup.id
-            nextGroup.children.push(
-              child,
-              {
+      {(!maxDepth || depth < maxDepth) &&
+        <Button
+          onClick={() => {
+            const child = node
+            const parent = mapped[mapped[child.id].parentId]
+            if (parent.type === 'GROUP_EXPRESSION') {
+              const childIndex = parent.children.indexOf(child)
+              const nextGroup: IRuleGroupNode = {
                 id: uuid(),
-                type: 'CONDITION_EXPRESSION',
-                left: { type: 'MODEL' },
-                right: { type: 'LITERAL', value: '' },
-                operator: undefined
+                type: 'GROUP_EXPRESSION',
+                relation: IRelation.AND,
+                children: []
               }
-            )
-            parent.children.splice(childIndex, 1, nextGroup)
-          }
-          onChange()
-        }}
-      ><Icon type='toggle-right' /></Button>
+              child.parentId = nextGroup.id
+              nextGroup.children.push(
+                child,
+                {
+                  id: uuid(),
+                  type: 'CONDITION_EXPRESSION',
+                  left: { type: 'MODEL' },
+                  right: { type: 'LITERAL', value: '' },
+                  operator: undefined
+                }
+              )
+              parent.children.splice(childIndex, 1, nextGroup)
+            }
+            onChange()
+          }}
+        ><Icon type='toggle-right' /></Button>
+      }
       {/* 5.3 删除 */}
       <Button
         onClick={() => {
@@ -138,7 +140,7 @@ function RuleGroupNode ({ node, depth = 0, hasBackground, hasBorder }: { node: I
             {(children || []).map((child, index) =>
               <div key={`${child.id}_${index}`}>
                 {child.type === 'GROUP_EXPRESSION' && <RuleGroupNode node={child} depth={depth + 1} hasBackground />}
-                {child.type === 'CONDITION_EXPRESSION' && <RuleConditionNode node={child} />}
+                {child.type === 'CONDITION_EXPRESSION' && <RuleConditionNode node={child} depth={depth + 1} />}
               </div>
             )}
           </Box>
@@ -148,7 +150,14 @@ function RuleGroupNode ({ node, depth = 0, hasBackground, hasBorder }: { node: I
   )
 }
 
-export default ({ models: remoteModels, content: remoteContent, onChange } : { models: IRuleModel[]; content: IRuleGroupNode; onChange?: (content: IRuleGroupNode) => void; }) => {
+interface IRuleEditorProps {
+  models: IRuleModel[];
+  content: IRuleGroupNode;
+  maxDepth?: number;
+  onChange?: (content: IRuleGroupNode) => void;
+}
+
+export default ({ models: remoteModels, content: remoteContent, maxDepth, onChange } : IRuleEditorProps) => {
   const [content, setContent] = useState<IRuleGroupNode>(remoteContent)
   useEffect(() => {
     const { content: nextContent, changed } = fixContent(content)
@@ -167,7 +176,8 @@ export default ({ models: remoteModels, content: remoteContent, onChange } : { m
       onChange: () => {
         setContent({ ...content })
         if (onChange) onChange({ ...content })
-      }
+      },
+      maxDepth
     }}
   >
     <RuleGroupNode node={content} />
