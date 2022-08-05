@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Box, Button, Icon } from '@alifd/next'
 import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP, uuid } from './shared'
 import { RuleEditorContext, tree2map, ModelAndField, RuleGroupNodeRelationColumn, WidthAutoSelect, RuleGroupNodeBodyColumnWrapper, fixContent, RuleGroupNodeWrapper, RuleGroupNodeRelationColumnWrapper, RuleConditionNodeWrapper, OperatorSelect, LiteralSetter } from './RuleEditorParts'
-import { IRuleConditionNode, IRuleGroupNode, IRelation, IRuleModel } from './types'
+import { IRuleConditionNode, IRuleGroupNode, IRelation, IRuleModel, IRuleNodeType, IExpressionType } from './types'
 // Program Expression left right operator
 // Rule / condition
 
@@ -51,13 +51,13 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
         onClick={() => {
           const child = node
           const parent = mapped[mapped[child.id].parentId]
-          if (parent.type === 'GROUP_EXPRESSION') {
+          if (parent.type === IRuleNodeType.GROUP) {
             const childIndex = parent.children.indexOf(node)
             parent.children.splice(childIndex + 1, 0, {
               id: uuid(),
-              type: 'CONDITION_EXPRESSION',
-              left: { type: 'MODEL' },
-              right: { type: 'LITERAL', value: '' },
+              type: IRuleNodeType.CONDITION,
+              left: { type: IExpressionType.MODEL },
+              right: { type: IExpressionType.LITERAL, value: '' },
               operator: undefined
             })
           }
@@ -70,11 +70,11 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
           onClick={() => {
             const child = node
             const parent = mapped[mapped[child.id].parentId]
-            if (parent.type === 'GROUP_EXPRESSION') {
+            if (parent.type === IRuleNodeType.GROUP) {
               const childIndex = parent.children.indexOf(child)
               const nextGroup: IRuleGroupNode = {
                 id: uuid(),
-                type: 'GROUP_EXPRESSION',
+                type: IRuleNodeType.GROUP,
                 relation: IRelation.AND,
                 children: []
               }
@@ -83,9 +83,9 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
                 child,
                 {
                   id: uuid(),
-                  type: 'CONDITION_EXPRESSION',
-                  left: { type: 'MODEL' },
-                  right: { type: 'LITERAL', value: '' },
+                  type: IRuleNodeType.CONDITION,
+                  left: { type: IExpressionType.MODEL },
+                  right: { type: IExpressionType.LITERAL, value: '' },
                   operator: undefined
                 }
               )
@@ -101,7 +101,7 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
           const child = node
           const parent = mapped[mapped[child.id].parentId]
           if (!parent) return
-          if (parent.type === 'GROUP_EXPRESSION') {
+          if (parent.type === IRuleNodeType.GROUP) {
             if (parent.children.length === 1) return
             const childIndex = parent.children.indexOf(child)
             parent.children.splice(childIndex, 1)
@@ -110,7 +110,7 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
             if (parent.children.length === 1) {
               const grand = mapped[parent.parentId]
               if (!grand) return
-              if (grand.type === 'GROUP_EXPRESSION') {
+              if (grand.type === IRuleNodeType.GROUP) {
                 const parentIndex = grand.children.indexOf(parent)
                 child.parentId = grand.id
                 grand.children.splice(parentIndex, 1, parent.children[0])
@@ -139,8 +139,8 @@ function RuleGroupNode ({ node, depth = 0, hasBackground, hasBorder }: { node: I
           <Box direction='column' spacing={8}>
             {(children || []).map((child, index) =>
               <div key={`${child.id}_${index}`}>
-                {child.type === 'GROUP_EXPRESSION' && <RuleGroupNode node={child} depth={depth + 1} hasBackground />}
-                {child.type === 'CONDITION_EXPRESSION' && <RuleConditionNode node={child} depth={depth + 1} />}
+                {child.type === IRuleNodeType.GROUP && <RuleGroupNode node={child} depth={depth + 1} hasBackground />}
+                {child.type === IRuleNodeType.CONDITION && <RuleConditionNode node={child} depth={depth + 1} />}
               </div>
             )}
           </Box>

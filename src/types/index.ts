@@ -20,6 +20,11 @@ export interface IRule {
   content: IRuleGroupNode;
 }
 
+export enum IRuleNodeType {
+  GROUP = 'GROUP',
+  CONDITION = 'CONDITION'
+}
+
 export enum IRelation {
   AND = 'AND',
   OR = 'OR'
@@ -36,24 +41,31 @@ export enum IRuleConditionOperator {
   ONE_OF = 'ONE_OF'
 }
 
+export enum IExpressionType {
+  LITERAL = 'LITERAL',
+  MODEL = 'MODEL'
+}
+
 export interface ILiteralExpression {
-  type: 'LITERAL';
+  type: IExpressionType.LITERAL;
   value?: string | any;
 }
 
 export interface IMemberExpression {
-  type: 'MODEL';
+  type: IExpressionType.MODEL;
   modelId?: number;
   modelName?: string;
+  modelCode?: string;
   fieldId?: number;
   fieldName?: string;
+  fieldCode?: string;
   value?: string | any;
 }
 
 export interface IRuleGroupNode {
   id: number;
   parentId?: number;
-  type: 'GROUP_EXPRESSION';
+  type: IRuleNodeType.GROUP;
   relation?: IRelation,
   children?: (IRuleConditionNode | IRuleGroupNode)[];
 }
@@ -61,14 +73,14 @@ export interface IRuleGroupNode {
 export interface IRuleConditionNode {
   id?: number;
   parentId?: number;
-  type: 'CONDITION_EXPRESSION';
+  type: IRuleNodeType.CONDITION;
   left?: IMemberExpression;
   right?: ILiteralExpression | IMemberExpression;
   operator?: IRuleConditionOperator;
 }
 
 /**
- *
+ * 模型 + 字段
  */
 export interface IRuleModel {
   id: number;
@@ -77,14 +89,17 @@ export interface IRuleModel {
   fields: IRuleField[]
 }
 
+export type ISetter =
+  'BoolSetter' | 'NumberSetter' | 'RangeSetter' | 'TextSetter' |
+  'DateSetter' | 'DateTimeSetter' | 'YearSetter' | 'MonthSetter' | 'RangeDateSetter' | 'RangeDateTimeSetter' | 'TimeSetter' |
+  React.ReactElement
+
 export interface IRuleField {
   id: number;
   name: string;
   code: string;
   /** 配置项的设置器 */
-  setter?: 'BoolSetter' | 'NumberSetter' | 'RangeSetter' | 'TextSetter'
-    | 'DateSetter' | 'DateTimeSetter' | 'YearSetter' | 'MonthSetter' | 'RangeDateSetter' | 'RangeDateTimeSetter' | 'TimeSetter'
-    | React.ReactElement;
+  setter?: ISetter;
   /** 针对设置器的配置 */
   setterProps?: { [key: string]: any; };
 }
