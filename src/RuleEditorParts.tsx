@@ -1,10 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Box, Button, DatePicker, Input, NumberPicker, Range, Select, Switch, TimePicker } from '@alifd/next'
-<<<<<<< HEAD
-import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRelation, INextRecord } from './types/index'
-=======
-import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRelation, IRuleNodeType, IExpressionType } from './types/index'
->>>>>>> dev
+import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRelation, IRuleNodeType, IExpressionType, INextRecord } from './types/index'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { uuid } from './shared'
 import moment from 'moment'
