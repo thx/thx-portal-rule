@@ -2,13 +2,14 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Box, Button, Icon } from '@alifd/next'
 import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP, uuid } from './shared'
 import { RuleEditorContext, tree2map, ModelAndField, RuleGroupNodeRelationColumn, WidthAutoSelect, RuleGroupNodeBodyColumnWrapper, fixContent, RuleGroupNodeWrapper, RuleGroupNodeRelationColumnWrapper, RuleConditionNodeWrapper, OperatorSelect, LiteralSetter } from './RuleEditorParts'
-import { IRuleConditionNode, IRuleGroupNode, IRelation, IRuleModel } from './types'
+import { IRuleConditionNode, IRuleGroupNode, IRelation, IRuleModel, INextRecord } from './types'
 // Program Expression left right operator
 // Rule / condition
 
 function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; depth?: number; }) {
-  const { models, mapped, onChange, maxDepth } = useContext(RuleEditorContext)
+  const { models, mapped, onChange, maxDepth, operators } = useContext(RuleEditorContext)
   const { left, right, operator } = node
+  const OperatorMap = operators || OPERATOR_TYPE_MAP['*']
 
   return <RuleConditionNodeWrapper>
     <Box direction='row' spacing={8} wrap>
@@ -17,7 +18,7 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
       {/* 2. 操作符 */}
       <OperatorSelect
         defaultValue={operator}
-        dataSource={OPERATOR_TYPE_MAP['*']}
+        dataSource={OperatorMap}
         onChange={(value, action, item) => {
           node.operator = value
           onChange()
@@ -153,11 +154,12 @@ function RuleGroupNode ({ node, depth = 0, hasBackground, hasBorder }: { node: I
 interface IRuleEditorProps {
   models: IRuleModel[];
   content: IRuleGroupNode;
+  operators?: INextRecord[];
   maxDepth?: number;
   onChange?: (content: IRuleGroupNode) => void;
 }
 
-export default ({ models: remoteModels, content: remoteContent, maxDepth, onChange } : IRuleEditorProps) => {
+export default ({ models: remoteModels, content: remoteContent, operators: remoteOperators, maxDepth, onChange } : IRuleEditorProps) => {
   const [content, setContent] = useState<IRuleGroupNode>(remoteContent)
   useEffect(() => {
     const { content: nextContent, changed } = fixContent(content)
@@ -177,6 +179,7 @@ export default ({ models: remoteModels, content: remoteContent, maxDepth, onChan
         setContent({ ...content })
         if (onChange) onChange({ ...content })
       },
+      operators: remoteOperators,
       maxDepth
     }}
   >

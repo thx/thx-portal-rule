@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Box, Button, DatePicker, Input, NumberPicker, Range, Select, Switch, TimePicker } from '@alifd/next'
-import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRelation } from './types/index'
+import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRelation, INextRecord } from './types/index'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { uuid } from './shared'
 import moment from 'moment'
@@ -55,6 +55,7 @@ interface IRuleEditorContext {
     [id: string]: IRuleConditionNode | IRuleGroupNode
   };
   onChange: (nextContent?: any) => void;
+  operators?: INextRecord[];
   maxDepth?: number;
 }
 export const RuleEditorContext = createContext<IRuleEditorContext>(undefined)
