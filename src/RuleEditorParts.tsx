@@ -1,6 +1,10 @@
 import styled, { css } from 'styled-components'
 import { Box, Button, DatePicker, Input, NumberPicker, Range, Select, Switch, TimePicker } from '@alifd/next'
+<<<<<<< HEAD
 import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRelation, INextRecord } from './types/index'
+=======
+import { IRuleGroupNode, IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRelation, IRuleNodeType, IExpressionType } from './types/index'
+>>>>>>> dev
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { uuid } from './shared'
 import moment from 'moment'
@@ -15,7 +19,7 @@ export function fixContent (content: IRuleGroupNode) {
   if (!content) {
     content = {
       id: uuid(),
-      type: 'GROUP_EXPRESSION'
+      type: IRuleNodeType.GROUP
     }
     changed = true
   }
@@ -24,7 +28,7 @@ export function fixContent (content: IRuleGroupNode) {
     changed = true
   }
   if (!content.type) {
-    content.type = 'GROUP_EXPRESSION'
+    content.type = IRuleNodeType.GROUP
     changed = true
   }
   if (!content.relation) {
@@ -35,12 +39,12 @@ export function fixContent (content: IRuleGroupNode) {
     content.children = [
       {
         id: uuid(),
-        type: 'CONDITION_EXPRESSION',
+        type: IRuleNodeType.CONDITION,
         left: {
-          type: 'MODEL'
+          type: IExpressionType.MODEL
         },
         right: {
-          type: 'LITERAL'
+          type: IExpressionType.LITERAL
         }
       }
     ]
@@ -86,7 +90,7 @@ export function tree2map (node: IRuleGroupNode, mapped:{ [id: string]: IRuleCond
       if (!child.id) child.id = uuid()
       child.parentId = node.id
       mapped[child.id] = child
-      if (child.type === 'GROUP_EXPRESSION') {
+      if (child.type === IRuleNodeType.GROUP) {
         tree2map(child, mapped)
       }
     })
@@ -179,9 +183,9 @@ export function RuleGroupNodeRelationColumn ({ style, node }: { style?: any; nod
         onClick={() => {
           node.children.push({
             id: uuid(),
-            type: 'CONDITION_EXPRESSION',
-            left: { type: 'MODEL' },
-            right: { type: 'LITERAL', value: '' },
+            type: IRuleNodeType.CONDITION,
+            left: { type: IExpressionType.MODEL },
+            right: { type: IExpressionType.LITERAL, value: '' },
             operator: undefined // IRuleConditionOperator.EQUAL
           })
           onChange()

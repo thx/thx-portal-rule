@@ -2,7 +2,11 @@ import { mock } from 'mockjs'
 import {
   IRuleGroupNode, IRuleConditionOperator, IRelation,
   IRuleModel,
-  OPERATOR_TYPE_MAP
+  OPERATOR_TYPE_MAP,
+  IRuleNodeType,
+  IExpressionType,
+  ISetter,
+  IRuleConditionNode
 } from 'thx-portal-rule'
 
 // 概念
@@ -14,17 +18,19 @@ export function uuid () {
   return ++__uuid__
 }
 
+const SETTER_NAME_LIST: ISetter[] = ['BoolSetter', 'NumberSetter', 'RangeSetter', 'TextSetter', 'DateSetter', 'DateTimeSetter', 'YearSetter', 'MonthSetter', 'RangeDateSetter', 'RangeDateTimeSetter', 'TimeSetter']
+
 export const MOCK_MODEL_LIST: IRuleModel[] = mock({
   'list|10': [{
     'id|1000-9999': 1,
     name: '模型@cword(5)',
-    coee: '@word(5)',
-    'fields|20': [
+    code: '@word(5)',
+    [`fields|${SETTER_NAME_LIST.length}`]: [
       {
         'id|1000-9999': 1,
         name: '字段@cword(5)',
-        coee: '@word(5)',
-        'setter|+1': ['BoolSetter', 'NumberSetter', 'RangeSetter', 'TextSetter', 'DateSetter', 'DateTimeSetter', 'YearSetter', 'MonthSetter', 'RangeDateSetter', 'RangeDateTimeSetter', 'TimeSetter']
+        code: '@word(5)',
+        'setter|+1': SETTER_NAME_LIST
       }
     ]
   }]
@@ -32,32 +38,32 @@ export const MOCK_MODEL_LIST: IRuleModel[] = mock({
   ...model,
   fields: model.fields.map(field => ({
     ...field,
-    name: `${field.setter} ${field.name}`
+    name: `${field.setter} ${field.name} #${field.code}`
   }))
 }))
 
 export const MOCK_CONTENT: IRuleGroupNode = {
   id: uuid(),
-  type: 'GROUP_EXPRESSION',
+  type: IRuleNodeType.GROUP,
   relation: IRelation.AND,
   children: [
     {
       id: uuid(),
-      type: 'GROUP_EXPRESSION',
+      type: IRuleNodeType.GROUP,
       relation: IRelation.AND,
       children: [
         {
           id: uuid(),
-          type: 'CONDITION_EXPRESSION',
+          type: IRuleNodeType.CONDITION,
           left: {
-            type: 'MODEL',
+            type: IExpressionType.MODEL,
             modelId: MOCK_MODEL_LIST[0].id,
             modelName: MOCK_MODEL_LIST[0].name,
             fieldId: MOCK_MODEL_LIST[0].fields[0].id,
             fieldName: MOCK_MODEL_LIST[0].fields[0].name
           },
           right: {
-            type: 'MODEL',
+            type: IExpressionType.MODEL,
             modelId: MOCK_MODEL_LIST[1].id,
             modelName: MOCK_MODEL_LIST[1].name,
             fieldId: MOCK_MODEL_LIST[1].fields[1].id,
@@ -67,16 +73,16 @@ export const MOCK_CONTENT: IRuleGroupNode = {
         },
         {
           id: uuid(),
-          type: 'CONDITION_EXPRESSION',
+          type: IRuleNodeType.CONDITION,
           left: {
-            type: 'MODEL',
+            type: IExpressionType.MODEL,
             modelId: MOCK_MODEL_LIST[2].id,
             modelName: MOCK_MODEL_LIST[2].name,
             fieldId: MOCK_MODEL_LIST[2].fields[2].id,
             fieldName: MOCK_MODEL_LIST[2].fields[2].name
           },
           right: {
-            type: 'MODEL',
+            type: IExpressionType.MODEL,
             modelId: MOCK_MODEL_LIST[3].id,
             modelName: MOCK_MODEL_LIST[3].name,
             fieldId: MOCK_MODEL_LIST[3].fields[3].id,
@@ -86,24 +92,21 @@ export const MOCK_CONTENT: IRuleGroupNode = {
         }
       ]
     },
-    {
+    ...SETTER_NAME_LIST.map<IRuleConditionNode>(setter => ({
       id: uuid(),
-      type: 'CONDITION_EXPRESSION',
+      type: IRuleNodeType.CONDITION,
       left: {
-        type: 'MODEL',
+        type: IExpressionType.MODEL,
         modelId: MOCK_MODEL_LIST[4].id,
         modelName: MOCK_MODEL_LIST[4].name,
-        fieldId: MOCK_MODEL_LIST[4].fields[4].id,
-        fieldName: MOCK_MODEL_LIST[4].fields[4].name
+        fieldId: MOCK_MODEL_LIST[4].fields.find(field => field.setter === setter)?.id,
+        fieldName: MOCK_MODEL_LIST[4].fields.find(field => field.setter === setter)?.name
       },
       right: {
-        type: 'MODEL',
-        modelId: MOCK_MODEL_LIST[5].id,
-        modelName: MOCK_MODEL_LIST[5].name,
-        fieldId: MOCK_MODEL_LIST[5].fields[5].id,
-        fieldName: MOCK_MODEL_LIST[5].fields[5].name
+        type: IExpressionType.LITERAL,
+        value: ''
       },
       operator: IRuleConditionOperator.EQUAL
-    }
+    }))
   ]
 }
