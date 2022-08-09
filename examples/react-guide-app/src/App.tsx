@@ -12,6 +12,9 @@ const GlobalStyle = createGlobalStyle`
   #root {
     padding: var(--s-2, 8px);
   }
+  .next-input.next-disabled input, .next-input.next-disabled textarea {
+    cursor: not-allowed;
+  }
   .GlobalStyle.styled {}
 `
 

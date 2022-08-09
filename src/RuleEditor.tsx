@@ -1,125 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Box, Button, Icon } from '@alifd/next'
-import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP, uuid } from './shared'
-import { RuleEditorContext, tree2map, ModelAndField, RuleGroupNodeRelationColumn, WidthAutoSelect, RuleGroupNodeBodyColumnWrapper, fixContent, RuleGroupNodeWrapper, RuleGroupNodeRelationColumnWrapper, RuleConditionNodeWrapper, OperatorSelect, LiteralSetter } from './RuleEditorParts'
-import { IRuleConditionNode, IRuleGroupNode, IRelation, IRuleModel, IRuleNodeType, IExpressionType } from './types'
-// Program Expression left right operator
-// Rule / condition
+import React, { useCallback, useContext } from 'react'
+import { Box } from '@alifd/next'
+import { RuleGroupNodeRelationColumn, RuleGroupNodeBodyColumnWrapper, RuleGroupNodeWrapper, RuleGroupNodeRelationColumnWrapper } from './RuleGroupNodeParts'
+import { RuleEditorContext } from './RuleEditorContext'
+import useRuleEditor from './useRuleEditor'
+import { AppendChildButton, AppendSiblingButton, ExpressionTypeSelect, LiteralSetter, ModelAndField, OperatorSelect, RemoveChildButton, RuleConditionNodeWrapper } from './RuleConditionNodeParts'
+import { IRuleConditionNode, IRuleGroupNode, IRuleModel, IRuleNodeType, IRuleMode } from './types'
 
 function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; depth?: number; }) {
-  const { models, mapped, onChange, maxDepth } = useContext(RuleEditorContext)
-  const { left, right, operator } = node
+  const { mode, models, maxDepth } = useContext(RuleEditorContext)
+  const { left, right } = node
 
   return <RuleConditionNodeWrapper>
     <Box direction='row' spacing={8} wrap>
       {/* 1. 左侧 模型 + 字段 */}
       <ModelAndField models={models} expression={left} />
       {/* 2. 操作符 */}
-      <OperatorSelect
-        defaultValue={operator}
-        dataSource={OPERATOR_TYPE_MAP['*']}
-        onChange={(value, action, item) => {
-          node.operator = value
-          onChange()
-        }}
-        style={{ width: 90 }}
-      />
+      <OperatorSelect node={node} />
       {/* 3. 右侧 类型 */}
-      <WidthAutoSelect
-        defaultValue={operator}
-        value={right?.type}
-        dataSource={EXPRESSION_TYPE_DATASOURCE}
-        onChange={(value, action, item) => {
-          right.type = value
-          onChange()
-        }}
-        style={{ width: 90 }}
-      />
-      {/* 4. 右侧 字面量 */}
-      {right?.type === 'LITERAL' &&
-        <Box align='center' justify='center'>
-          <LiteralSetter node={node} />
-        </Box>
-      }
-
-      {/* 4. 右侧 模型 + 字段 */}
-      {right?.type === 'MODEL' && (
-        <ModelAndField models={models} expression={right} />
-      )}
+      {mode !== IRuleMode.LITERAL && <ExpressionTypeSelect expression={right} />}
+      {/* 4.1 右侧 字面量 */}
+      {right?.type === 'LITERAL' && <LiteralSetter node={node} />}
+      {/* 4.2 右侧 模型 + 字段 */}
+      {right?.type === 'MODEL' && <ModelAndField models={models} expression={right} />}
       {/* 5.1 增加同级 */}
-      <Button
-        onClick={() => {
-          const child = node
-          const parent = mapped[mapped[child.id].parentId]
-          if (parent.type === IRuleNodeType.GROUP) {
-            const childIndex = parent.children.indexOf(node)
-            parent.children.splice(childIndex + 1, 0, {
-              id: uuid(),
-              type: IRuleNodeType.CONDITION,
-              left: { type: IExpressionType.MODEL },
-              right: { type: IExpressionType.LITERAL, value: '' },
-              operator: undefined
-            })
-          }
-          onChange()
-        }}
-      ><Icon type='add' /></Button>
+      <AppendSiblingButton child={node} />
       {/* 5.2 增加子级 */}
-      {(!maxDepth || depth < maxDepth) &&
-        <Button
-          onClick={() => {
-            const child = node
-            const parent = mapped[mapped[child.id].parentId]
-            if (parent.type === IRuleNodeType.GROUP) {
-              const childIndex = parent.children.indexOf(child)
-              const nextGroup: IRuleGroupNode = {
-                id: uuid(),
-                type: IRuleNodeType.GROUP,
-                relation: IRelation.AND,
-                children: []
-              }
-              child.parentId = nextGroup.id
-              nextGroup.children.push(
-                child,
-                {
-                  id: uuid(),
-                  type: IRuleNodeType.CONDITION,
-                  left: { type: IExpressionType.MODEL },
-                  right: { type: IExpressionType.LITERAL, value: '' },
-                  operator: undefined
-                }
-              )
-              parent.children.splice(childIndex, 1, nextGroup)
-            }
-            onChange()
-          }}
-        ><Icon type='toggle-right' /></Button>
-      }
+      {(!maxDepth || depth < maxDepth) && <AppendChildButton child={node} /> }
       {/* 5.3 删除 */}
-      <Button
-        onClick={() => {
-          const child = node
-          const parent = mapped[mapped[child.id].parentId]
-          if (!parent) return
-          if (parent.type === IRuleNodeType.GROUP) {
-            if (parent.children.length === 1) return
-            const childIndex = parent.children.indexOf(child)
-            parent.children.splice(childIndex, 1)
-            onChange()
-
-            if (parent.children.length === 1) {
-              const grand = mapped[parent.parentId]
-              if (!grand) return
-              if (grand.type === IRuleNodeType.GROUP) {
-                const parentIndex = grand.children.indexOf(parent)
-                child.parentId = grand.id
-                grand.children.splice(parentIndex, 1, parent.children[0])
-                onChange()
-              }
-            }
-          }
-        }}
-      ><Icon type='ashbin' /></Button>
+      <RemoveChildButton child={node} />
     </Box>
   </RuleConditionNodeWrapper>
 }
@@ -151,32 +59,35 @@ function RuleGroupNode ({ node, depth = 0, hasBackground, hasBorder }: { node: I
 }
 
 interface IRuleEditorProps {
+  mode?: IRuleMode;
   models: IRuleModel[];
   content: IRuleGroupNode;
-  maxDepth?: number;
   onChange?: (content: IRuleGroupNode) => void;
+  maxDepth?: number;
 }
 
-export default ({ models: remoteModels, content: remoteContent, maxDepth, onChange } : IRuleEditorProps) => {
-  const [content, setContent] = useState<IRuleGroupNode>(remoteContent)
-  useEffect(() => {
-    const { content: nextContent, changed } = fixContent(content)
-    if (changed) setContent({ ...nextContent })
-  }, [])
-  const [mapped, setMapped] = useState<{ [id: string]: IRuleConditionNode | IRuleGroupNode }>({})
-  useEffect(() => {
-    if (!content) return
-    setMapped(tree2map(content))
+export default ({ mode, models: remoteModels, content: remoteContent, onChange: onRemoteChange, maxDepth } : IRuleEditorProps) => {
+  const {
+    content, mapped, setContent,
+    appendChild, appendSibling, appendGroupWithChild,
+    removeChild
+  } = useRuleEditor(remoteContent)
+  const onChange = useCallback(() => {
+    setContent({ ...content })
+    if (onRemoteChange) onRemoteChange({ ...content })
   }, [content])
 
   return <RuleEditorContext.Provider
     value={{
+      mode,
       models: remoteModels,
       mapped,
-      onChange: () => {
-        setContent({ ...content })
-        if (onChange) onChange({ ...content })
-      },
+      contentMap: mapped,
+      appendChild,
+      appendSibling,
+      appendGroupWithChild,
+      removeChild,
+      onChange,
       maxDepth
     }}
   >
