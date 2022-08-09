@@ -1,5 +1,5 @@
 {
-  "name": "thx-portal-rule",
+  "name": "@ali/thx-portal-rule",
   "version": "0.0.1-alpha.4",
   "description": "MM 可视化规则编辑器",
   "main": "build/index.js",
@@ -27,7 +27,8 @@
     "========== release tnpm ==========": "",
     "daily:def": "def publish --daily",
     "publish:def": "def publish --prod; yarn run build; tnpm publish;",
-    "publish:tnpm": "npm version patch; git add package.json; git commit -m 'publish: tnpm'; yarn run build; tnpm publish;"
+    "publish:tnpm": "npm version patch; git add package.json; git commit -m 'publish: tnpm'; yarn run build; tnpm publish;",
+    "publish:tnpm:alpha": "npm version prerelease; git add package.json; git commit -m 'publish: tnpm'; yarn run build; tnpm publish;"
   },
   "dependencies": {
     "@alifd/next": "^1.25.45",
