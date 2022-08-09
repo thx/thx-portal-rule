@@ -12,11 +12,11 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
 
   return <RuleConditionNodeWrapper>
     <Box direction='row' spacing={8} wrap>
-      {/* 1. 左侧 模型 + 字段 */}
+      {/* 1 左侧 模型 + 字段 */}
       <ModelAndField models={models} expression={left} />
-      {/* 2. 操作符 */}
+      {/* 2 操作符 */}
       <OperatorSelect node={node} />
-      {/* 3. 右侧 类型 */}
+      {/* 3 右侧 类型 */}
       {mode !== IRuleMode.LITERAL && <ExpressionTypeSelect expression={right} />}
       {/* 4.1 右侧 字面量 */}
       {right?.type === 'LITERAL' && <LiteralSetter node={node} />}
@@ -72,6 +72,7 @@ export default ({ mode, models: remoteModels, content: remoteContent, onChange: 
     appendChild, appendSibling, appendGroupWithChild,
     removeChild
   } = useRuleEditor(remoteContent)
+
   const onChange = useCallback(() => {
     setContent({ ...content })
     if (onRemoteChange) onRemoteChange({ ...content })

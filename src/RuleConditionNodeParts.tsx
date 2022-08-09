@@ -114,9 +114,18 @@ interface IOperatorSelectProps extends SelectProps {
   node: IRuleConditionNode;
 }
 
+// 操作符下拉框，优先读取自定义操作符映射列表
 export function OperatorSelect ({ style, node }: IOperatorSelectProps) {
   const { onChange } = useContext(RuleEditorContext)
   const { operator } = node
+
+  // TODO TODO node.left.type => 可选的操作符列表
+  // 优先级：自定义操作符列表（类型与列表的映射） 大于 默认操作符列表（类型与列表的映射）
+  // const { CUSTOM_LOCAL_OPERATOR_TYPE_MAP /* 自定义操作符列表（类型与列表的映射） */ } = useContext(RuleEditorContext)
+  // const localOperatorMap = CUSTOM_LOCAL_OPERATOR_TYPE_MAP || OPERATOR_TYPE_MAP
+  // const localType = node.left.type || '*'
+  // const dataSource = localOperatorMap[localType]
+
   return <OperatorSelectWrapper
     defaultValue={operator}
     dataSource={OPERATOR_TYPE_MAP['*']}

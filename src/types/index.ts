@@ -166,6 +166,8 @@ export interface IRuleField {
   id: number;
   name: string;
   code: string;
+  /** @deprecated TODO 未实现 */
+  type?: 'BOOLEAN' |'NUMBER' |'STRING' |'DATE' |'DATETIME' | 'COLLECTION' | string;
   /** 配置项的设置器 */
   setter?: ISetter;
   /** 针对设置器的配置 */
