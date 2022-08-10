@@ -6,7 +6,8 @@ import {
   IRuleNodeType,
   IExpressionType,
   ISetter,
-  IRuleConditionNode
+  IRuleConditionNode,
+  IOperatorMap
 } from 'thx-portal-rule'
 
 // 概念
@@ -30,7 +31,8 @@ export const MOCK_MODEL_LIST: IRuleModel[] = mock({
         'id|1000-9999': 1,
         name: '字段@cword(5)',
         code: '@word(5)',
-        'setter|+1': SETTER_NAME_LIST
+        'setter|+1': SETTER_NAME_LIST,
+        operatorSourceType: 'BOOLEAN'
       }
     ]
   }]
@@ -108,5 +110,17 @@ export const MOCK_CONTENT: IRuleGroupNode = {
       },
       operator: IRuleConditionOperator.EQUAL
     }))
+  ]
+}
+
+export const MOCK_OPERATOR_MAP: IOperatorMap = {
+  '*': [
+    { label: '等于', value: 'EQUAL' },
+    { label: '不等于.', value: 'NOT_EQUAL' },
+  ],
+  'boolean': [
+    { label: '等于', value: 'EQUAL' },
+    { label: '不等于', value: 'NOT_EQUAL' },
+    { label: '严格等于', value: 'STRICT_EQUAL' },
   ]
 }

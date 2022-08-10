@@ -1,4 +1,4 @@
-import { IRuleGroupNode, IRuleConditionNode, IRuleModel, IRuleMode } from './types/index'
+import { IRuleGroupNode, IRuleConditionNode, IRuleModel, IRuleMode, IOperatorMap } from './types/index'
 import { createContext } from 'react'
 import moment from 'moment'
 moment.locale('zh-cn')
@@ -19,5 +19,6 @@ interface IRuleEditorContext {
   mapped: {
     [id: string]: IRuleConditionNode | IRuleGroupNode
   };
+  operatorMap: IOperatorMap;
 }
 export const RuleEditorContext = createContext<IRuleEditorContext>(undefined)
