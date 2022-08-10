@@ -133,6 +133,7 @@ export interface IMemberExpression {
   fieldId?: number;
   fieldName?: string;
   fieldCode?: string;
+  fieldType?: IFieldType;
   value?: string | any;
 }
 
@@ -172,9 +173,11 @@ export interface IRuleField {
   id: number;
   name: string;
   code: string;
-  operatorSourceType?: 'BOOLEAN' |'NUMBER' |'STRING' |'DATE' |'DATETIME' | 'COLLECTION' | string;
+  type?: IFieldType;
   /** 配置项的设置器 */
   setter?: ISetter;
   /** 针对设置器的配置 */
   setterProps?: { [key: string]: any; };
 }
+
+export type IFieldType = 'BOOLEAN' |'NUMBER' |'STRING' |'DATE' |'DATETIME' | 'COLLECTION' | string

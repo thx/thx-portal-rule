@@ -93,6 +93,7 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
 
         expression.fieldId = value
         expression.fieldName = item.name
+        expression.fieldType = item.type
         onChange()
       }}
       disabled={model === undefined}
@@ -116,32 +117,11 @@ interface IOperatorSelectProps extends SelectProps {
 
 // 操作符下拉框，优先读取自定义操作符映射列表
 export function OperatorSelect ({ style, node }: IOperatorSelectProps) {
-  const { onChange, operatorMap, models: remoteModels } = useContext(RuleEditorContext)
+  const { onChange, operatorMap } = useContext(RuleEditorContext)
   const { operator, left: expression } = node
 
-  const [models, setModels] = useState<IRuleModel[]>(remoteModels)
-  useEffect(() => {
-    setModels(remoteModels)
-  }, [remoteModels])
-
-  const [model, setModel] = useState<IRuleModel>()
-  useEffect(() => {
-    if (!models) return
-    setModel(
-      models.find(item => item.id === expression.modelId)
-    )
-  }, [models, expression])
-
-  const [field, setField] = useState<IRuleField>()
-  useEffect(() => {
-    if (!model) return
-    setField(
-      model.fields.find(item => item.id === expression.fieldId)
-    )
-  }, [model, expression])
-
   const localOperatorMap: IOperatorMap = operatorMap || OPERATOR_TYPE_MAP
-  const dataSource = localOperatorMap[field?.operatorSourceType || '*'] || localOperatorMap['*']
+  const dataSource = localOperatorMap[expression.fieldType || '*'] || localOperatorMap['*']
 
   return <OperatorSelectWrapper
     defaultValue={operator}

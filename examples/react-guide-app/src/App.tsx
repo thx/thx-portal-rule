@@ -20,7 +20,6 @@ const GlobalStyle = createGlobalStyle`
 
 export default function App () {
   const [content, setContent] = useState(MOCK_CONTENT)
-  console.log(content, MOCK_MODEL_LIST)
   return <>
     <GlobalStyle />
     <div style={{ padding: 16, border: '1px solid #E6E6E6', backgroundColor: 'white' }}>
