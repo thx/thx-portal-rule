@@ -225,22 +225,55 @@ export function LiteralSetter ({ style, node } :{ style?: any; node: IRuleCondit
   return nextSetter
 }
 
+function AppendSiblingIcon (props) {
+  return <svg
+    xmlns='http://www.w3.org/2000/svg'
+    version='1.1'
+    viewBox='0 0 1024 1024'
+    width='30'
+    height='30'
+    {...props}
+  >
+    <path
+      d='M288 704.5h-64v-160H64v-64h160v-160h64v160h160v64H288zM512 319.5h448v64H512zM512 480.5h448v64H512zM512 640.5h448v64H512z'
+    />
+  </svg>
+}
+
 export function AppendSiblingButton ({ style, child }: { style?: any; child: IRuleConditionNode; }) {
   const { appendSibling, onChange } = useContext(RuleEditorContext)
   return <Balloon.Tooltip
     trigger={
       <Button
-        style={style}
+        style={{ width: 48, padding: 0, ...style }}
         onClick={() => {
           appendSibling(child)
           onChange()
         }}
-      ><Icon type='add' /></Button>
+      >
+        {/* <Icon type='add' /> */}
+        <Icon><AppendSiblingIcon /></Icon>
+      </Button>
     }
     align='t'
   >
     <div>添加同级条件</div>
   </Balloon.Tooltip>
+}
+
+function AppendChildIcon (props) {
+  return <svg
+    xmlns='http://www.w3.org/2000/svg'
+    version='1.1'
+    viewBox='0 0 1024 1024'
+    width='24'
+    height='24'
+    {...props}
+  >
+    <path
+      d='M288 401.9h-64V562H64v64h160v160h64V626h160v-64H288zM512 400.9h448v64H512zM512 562h448v64H512zM512 722h448v64H512zM64 238h896v64H64z'
+    />
+  </svg>
 }
 
 export function AppendChildButton ({ style, child }: { style?: any; child: IRuleConditionNode; }) {
@@ -250,12 +283,16 @@ export function AppendChildButton ({ style, child }: { style?: any; child: IRule
   return <Balloon.Tooltip
     trigger={
       <Button
-        style={style}
+        style={{ width: 48, padding: 0, ...style }}
         onClick={() => {
           appendGroupWithChild(child)
           onChange()
         }}
-      ><Icon type='toggle-right' /></Button>
+
+      >
+        {/* <Icon type='toggle-right' /> */}
+        <Icon><AppendChildIcon /></Icon>
+      </Button>
     }
     align='t'
   >
