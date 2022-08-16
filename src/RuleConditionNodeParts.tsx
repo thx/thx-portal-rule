@@ -130,7 +130,8 @@ export function OperatorSelect ({ style, node }: IOperatorSelectProps) {
       node.operator = value
       onChange()
     }}
-    style={{ ...style, width: 90 }}
+    autoWidth
+    style={style}
   />
 }
 
@@ -195,14 +196,14 @@ export function LiteralSetter ({ style, node } :{ style?: any; node: IRuleCondit
   // => disabled
   // if (!leftField) return null
 
-  const { setter, setterProps } = leftField || {}
+  const { setter, setterProps = {} } = leftField || {}
   const extraProps = {
     defaultValue: right.value,
     onChange: (value) => {
       right.value = value
       onChange()
     },
-    style,
+    style: setterProps.style ? { ...style, ...setterProps.style } : style,
     disabled: !leftField
   }
   let nextSetter: ReactNode
