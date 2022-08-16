@@ -71,11 +71,17 @@ export enum IRuleConditionOperator {
 
 }
 
+export interface IOperatorMap {
+  [type: string]: IOperatorMapItem[];
+}
+
+export interface IOperatorMapItem {
+  label: string;
+  value: IRuleConditionOperator | any;
+}
+
 export const RuleConditionOperatorMap: {
-  [type: string]: {
-    label: string;
-    value: IRuleConditionOperator;
-  }
+  [type: string]: IOperatorMapItem
 } = {
   EQUAL: { label: '等于', value: IRuleConditionOperator.EQUAL },
   NOT_EQUAL: { label: '不等于', value: IRuleConditionOperator.NOT_EQUAL },
@@ -127,6 +133,7 @@ export interface IMemberExpression {
   fieldId?: number;
   fieldName?: string;
   fieldCode?: string;
+  fieldType?: IFieldType;
   value?: string | any;
 }
 
@@ -166,10 +173,11 @@ export interface IRuleField {
   id: number;
   name: string;
   code: string;
-  /** @deprecated TODO 未实现 */
-  type?: 'BOOLEAN' |'NUMBER' |'STRING' |'DATE' |'DATETIME' | 'COLLECTION' | string;
+  type?: IFieldType;
   /** 配置项的设置器 */
   setter?: ISetter;
   /** 针对设置器的配置 */
   setterProps?: { [key: string]: any; };
 }
+
+export type IFieldType = 'BOOLEAN' |'NUMBER' |'STRING' |'DATE' |'DATETIME' | 'COLLECTION' | string

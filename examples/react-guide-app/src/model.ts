@@ -6,7 +6,8 @@ import {
   IRuleNodeType,
   IExpressionType,
   ISetter,
-  IRuleConditionNode
+  IRuleConditionNode,
+  IOperatorMap
 } from 'thx-portal-rule'
 
 // 概念
@@ -30,7 +31,8 @@ export const MOCK_MODEL_LIST: IRuleModel[] = mock({
         'id|1000-9999': 1,
         name: '字段@cword(5)',
         code: '@word(5)',
-        'setter|+1': SETTER_NAME_LIST
+        'setter|+1': SETTER_NAME_LIST,
+        type: 'BOOLEAN'
       }
     ]
   }]
@@ -60,7 +62,8 @@ export const MOCK_CONTENT: IRuleGroupNode = {
             modelId: MOCK_MODEL_LIST[0].id,
             modelName: MOCK_MODEL_LIST[0].name,
             fieldId: MOCK_MODEL_LIST[0].fields[0].id,
-            fieldName: MOCK_MODEL_LIST[0].fields[0].name
+            fieldName: MOCK_MODEL_LIST[0].fields[0].name,
+            fieldType: 'BOOLEAN'
           },
           right: {
             type: IExpressionType.MODEL,
@@ -79,7 +82,8 @@ export const MOCK_CONTENT: IRuleGroupNode = {
             modelId: MOCK_MODEL_LIST[2].id,
             modelName: MOCK_MODEL_LIST[2].name,
             fieldId: MOCK_MODEL_LIST[2].fields[2].id,
-            fieldName: MOCK_MODEL_LIST[2].fields[2].name
+            fieldName: MOCK_MODEL_LIST[2].fields[2].name,
+            fieldType: 'BOOLEAN'
           },
           right: {
             type: IExpressionType.MODEL,
@@ -108,5 +112,17 @@ export const MOCK_CONTENT: IRuleGroupNode = {
       },
       operator: IRuleConditionOperator.EQUAL
     }))
+  ]
+}
+
+export const MOCK_OPERATOR_MAP: IOperatorMap = {
+  '*': [
+    { label: '等于', value: 'EQUAL' },
+    { label: '不等于.', value: 'NOT_EQUAL' },
+  ],
+  'BOOLEAN': [
+    { label: '等于', value: 'EQUAL' },
+    { label: '不等于', value: 'NOT_EQUAL' },
+    { label: '严格等于', value: 'STRICT_EQUAL' },
   ]
 }
