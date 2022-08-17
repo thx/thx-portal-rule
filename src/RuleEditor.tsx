@@ -38,11 +38,11 @@ function RuleGroupNode ({ node, depth = 0, hasBackground, hasBorder }: { node: I
   return (
     <RuleGroupNodeWrapper hasBackground={hasBackground} hasBorder={hasBorder}>
       <Box direction='row' spacing={16} style={{}}>
-        {children && children.length > 1 &&
-          <RuleGroupNodeRelationColumnWrapper>
-            <RuleGroupNodeRelationColumn node={node} />
-          </RuleGroupNodeRelationColumnWrapper>
-        }
+        {/* {children && children.length > 1 && */}
+        <RuleGroupNodeRelationColumnWrapper>
+          <RuleGroupNodeRelationColumn node={node} />
+        </RuleGroupNodeRelationColumnWrapper>
+        {/* } */}
         <RuleGroupNodeBodyColumnWrapper>
           <Box direction='column' spacing={8}>
             {(children || []).map((child, index) =>

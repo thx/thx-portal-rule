@@ -22,7 +22,7 @@ export default function App () {
   const [content, setContent] = useState(MOCK_CONTENT)
   return <>
     <GlobalStyle />
-    <div style={{ padding: 16, border: '1px solid #E6E6E6', backgroundColor: 'white' }}>
+    <div style={{ padding: 24, border: '1px solid #E6E6E6', backgroundColor: 'white' }}>
       <RuleEditor
         models={MOCK_MODEL_LIST}
         content={content}

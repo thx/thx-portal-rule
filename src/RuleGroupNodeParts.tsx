@@ -85,6 +85,7 @@ export function RuleGroupNodeRelationColumn ({ style, node }: { style?: any; nod
     <Box direction='column' align='center' spacing={0} style={{ position: 'relative' }}>
       <RelationSelect
         defaultValue={node.relation}
+        value={node.relation}
         dataSource={[
           { label: '且', value: 'AND' },
           { label: '或', value: 'OR' }
