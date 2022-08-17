@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { createGlobalStyle } from 'styled-components'
-import { IRuleMode, RuleEditor } from 'thx-portal-rule'
+import { IRuleMode, RuleEditor, IRelation } from 'thx-portal-rule'
 
 import './App.scss'
 import { MOCK_CONTENT, MOCK_MODEL_LIST, MOCK_OPERATOR_MAP } from './model'
@@ -27,6 +27,7 @@ export default function App () {
         models={MOCK_MODEL_LIST}
         content={content}
         onChange={(nextContent) => setContent(nextContent)}
+        // defaultGroupRelation={IRelation.OR}
         // operatorMap={MOCK_OPERATOR_MAP}
         // mode={IRuleMode.LITERAL}
         // maxDepth={2}

@@ -1,4 +1,4 @@
-import { IRuleGroupNode, IRuleConditionNode, IRuleModel, IRuleMode, IOperatorMap } from './types/index'
+import { IRuleGroupNode, IRuleConditionNode, IRuleModel, IRuleMode, IOperatorMap, IRelation } from './types/index'
 import { createContext } from 'react'
 import moment from 'moment'
 moment.locale('zh-cn')
@@ -15,6 +15,7 @@ interface IRuleEditorContext {
   removeChild: (child: IRuleConditionNode) => void;
   onChange: (nextContent?: any) => void;
   maxDepth?: number;
+  defaultGroupRelation?: IRelation;
   /** @deprecated => contentMap */
   mapped: {
     [id: string]: IRuleConditionNode | IRuleGroupNode

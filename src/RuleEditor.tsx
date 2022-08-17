@@ -4,7 +4,7 @@ import { RuleGroupNodeRelationColumn, RuleGroupNodeBodyColumnWrapper, RuleGroupN
 import { RuleEditorContext } from './RuleEditorContext'
 import useRuleEditor from './useRuleEditor'
 import { AppendChildButton, AppendSiblingButton, ExpressionTypeSelect, LiteralSetter, ModelAndField, OperatorSelect, RemoveChildButton, RuleConditionNodeWrapper } from './RuleConditionNodeParts'
-import { IRuleConditionNode, IRuleGroupNode, IRuleModel, IRuleNodeType, IRuleMode, IOperatorMap } from './types'
+import { IRuleConditionNode, IRuleGroupNode, IRuleModel, IRuleNodeType, IRuleMode, IOperatorMap, IRelation } from './types'
 
 function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; depth?: number; }) {
   const { mode, models, maxDepth } = useContext(RuleEditorContext)
@@ -65,6 +65,7 @@ interface IRuleEditorProps {
   onChange?: (content: IRuleGroupNode) => void;
   operatorMap?: IOperatorMap;
   maxDepth?: number;
+  defaultGroupRelation?: IRelation;
   modelSelectProps?: { [key: string]: any; };
   fieldSelectProps?: { [key: string]: any; };
   operatorProps?: { [key: string]: any; };
@@ -73,11 +74,11 @@ interface IRuleEditorProps {
 export default ({
   mode, models: remoteModels, content: remoteContent, onChange: onRemoteChange,
   maxDepth, operatorMap: remoteOperatorMap, modelSelectProps, fieldSelectProps,
-  operatorProps
+  operatorProps, defaultGroupRelation
 } : IRuleEditorProps) => {
   const {
     content, mapped, setContent, appendChild, appendSibling, appendGroupWithChild, removeChild
-  } = useRuleEditor(remoteContent)
+  } = useRuleEditor(remoteContent, defaultGroupRelation)
 
   const onChange = useCallback(() => {
     setContent({ ...content })
@@ -100,6 +101,7 @@ export default ({
       modelSelectProps,
       fieldSelectProps,
       operatorProps,
+      defaultGroupRelation
     }}
   >
     <RuleGroupNode node={content} />

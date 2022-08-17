@@ -3,7 +3,7 @@ import { uuid } from './shared'
 import styled from 'styled-components'
 import { Select } from '@alifd/next'
 
-export function fixContent (content: IRuleGroupNode) {
+export function fixContent (content: IRuleGroupNode, defaultGroupRelation: IRelation) {
   let changed = false
   if (!content) {
     content = {
@@ -21,7 +21,7 @@ export function fixContent (content: IRuleGroupNode) {
     changed = true
   }
   if (!content.relation) {
-    content.relation = IRelation.AND
+    content.relation = defaultGroupRelation || IRelation.AND
     changed = true
   }
   if (!content.children || !content.children.length) {
