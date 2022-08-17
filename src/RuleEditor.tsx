@@ -65,15 +65,18 @@ interface IRuleEditorProps {
   onChange?: (content: IRuleGroupNode) => void;
   operatorMap?: IOperatorMap;
   maxDepth?: number;
+  modelSelectProps?: { [key: string]: any; };
+  fieldSelectProps?: { [key: string]: any; };
+  operatorProps?: { [key: string]: any; };
 }
 
 export default ({
-  mode, models: remoteModels, content: remoteContent, onChange: onRemoteChange, maxDepth, operatorMap: remoteOperatorMap
+  mode, models: remoteModels, content: remoteContent, onChange: onRemoteChange,
+  maxDepth, operatorMap: remoteOperatorMap, modelSelectProps, fieldSelectProps,
+  operatorProps
 } : IRuleEditorProps) => {
   const {
-    content, mapped, setContent,
-    appendChild, appendSibling, appendGroupWithChild,
-    removeChild
+    content, mapped, setContent, appendChild, appendSibling, appendGroupWithChild, removeChild
   } = useRuleEditor(remoteContent)
 
   const onChange = useCallback(() => {
@@ -93,7 +96,10 @@ export default ({
       removeChild,
       onChange,
       maxDepth,
-      operatorMap: remoteOperatorMap
+      operatorMap: remoteOperatorMap,
+      modelSelectProps,
+      fieldSelectProps,
+      operatorProps,
     }}
   >
     <RuleGroupNode node={content} />

@@ -30,7 +30,9 @@ interface IModelAndFieldProps {
 
 // 条件 - 模型 & 字段
 export function ModelAndField ({ models: remoteModels = [], expression, ...extra }: IModelAndFieldProps) {
-  const { onChange } = useContext(RuleEditorContext)
+  const { onChange, modelSelectProps = {}, fieldSelectProps = {} } = useContext(RuleEditorContext)
+  const { style: modelStyle = {}, ...modelSelectExtraProps } = modelSelectProps
+  const { style: fieldStyle = {}, ...fieldSelectExtraProps } = fieldSelectProps
 
   const [models, setModels] = useState<IRuleModel[]>(remoteModels)
   useEffect(() => {
@@ -81,7 +83,8 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
         expression.modelName = item.name
         onChange()
       }}
-      style={{ width: 120 }}
+      style={{ width: 120, ...modelStyle }}
+      {...modelSelectExtraProps}
       autoWidth={false}
     />
     <WidthAutoSelect
@@ -97,7 +100,8 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
         onChange()
       }}
       disabled={model === undefined}
-      style={{ width: 120 }}
+      style={{ width: 120, ...fieldStyle }}
+      {...fieldSelectExtraProps}
       autoWidth={false}
     />
   </Box>
@@ -116,9 +120,10 @@ interface IOperatorSelectProps extends SelectProps {
 }
 
 // 操作符下拉框，优先读取自定义操作符映射列表
-export function OperatorSelect ({ style, node }: IOperatorSelectProps) {
-  const { onChange, operatorMap } = useContext(RuleEditorContext)
+export function OperatorSelect ({ node, style }: IOperatorSelectProps) {
+  const { onChange, operatorMap, operatorProps = {} } = useContext(RuleEditorContext)
   const { operator, left: expression } = node
+  const { style: operatorStyle = {} } = operatorProps
 
   const localOperatorMap: IOperatorMap = operatorMap || OPERATOR_TYPE_MAP
   const dataSource = localOperatorMap[expression.fieldType || '*'] || localOperatorMap['*']
@@ -130,8 +135,7 @@ export function OperatorSelect ({ style, node }: IOperatorSelectProps) {
       node.operator = value
       onChange()
     }}
-    autoWidth
-    style={style}
+    style={{ ...style, width: 90, ...operatorStyle }}
   />
 }
 
@@ -197,13 +201,14 @@ export function LiteralSetter ({ style, node } :{ style?: any; node: IRuleCondit
   // if (!leftField) return null
 
   const { setter, setterProps = {} } = leftField || {}
+  const { style: setterStyle = {} } = setterProps
   const extraProps = {
     defaultValue: right.value,
     onChange: (value) => {
       right.value = value
       onChange()
     },
-    style: setterProps.style ? { ...style, ...setterProps.style } : style,
+    style: { ...style, ...setterStyle },
     disabled: !leftField
   }
   let nextSetter: ReactNode

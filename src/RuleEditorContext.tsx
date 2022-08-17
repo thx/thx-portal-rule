@@ -20,5 +20,14 @@ interface IRuleEditorContext {
     [id: string]: IRuleConditionNode | IRuleGroupNode
   };
   operatorMap: IOperatorMap;
+  modelSelectProps?: {
+    [key: string]: any;
+  };
+  fieldSelectProps?: {
+    [key: string]: any;
+  };
+  operatorProps?: {
+    [key: string]: any;
+  };
 }
 export const RuleEditorContext = createContext<IRuleEditorContext>(undefined)

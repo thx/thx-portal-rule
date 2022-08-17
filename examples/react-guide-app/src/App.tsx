@@ -30,6 +30,9 @@ export default function App () {
         // operatorMap={MOCK_OPERATOR_MAP}
         // mode={IRuleMode.LITERAL}
         // maxDepth={2}
+        // modelSelectProps={{ style: { width: 200 } }}
+        // fieldSelectProps={{ style: { width: 250 } }}
+        // operatorProps={{ style: { width: 100 } }}
       />
     </div>
     <pre>{JSON.stringify(content, null, 2)}</pre>
