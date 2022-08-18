@@ -59,7 +59,7 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
   const [modelDataSource, setModelDataSource] = useState([])
   useEffect(() => {
     setModelDataSource(
-      models.map(item => ({ ...item, label: `${item.name} #${item.id}`, value: item.id }))
+      models.map(item => ({ ...item, label: item.name, value: item.id }))
     )
   }, [models])
   const [fieldDataSource, setFieldDataSource] = useState([])
@@ -81,6 +81,10 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
 
         expression.modelId = value
         expression.modelName = item.name
+        
+        delete expression.fieldId
+        delete expression.fieldName
+        delete expression.fieldType
         onChange()
       }}
       style={{ width: 120, ...modelStyle }}
@@ -124,12 +128,18 @@ export function OperatorSelect ({ node, style }: IOperatorSelectProps) {
   const { onChange, operatorMap, operatorProps = {} } = useContext(RuleEditorContext)
   const { operator, left: expression } = node
   const { style: operatorStyle = {} } = operatorProps
+  
+  const currentOperatorMap: IOperatorMap = operatorMap || OPERATOR_TYPE_MAP
+  const dataSource = currentOperatorMap[expression.fieldType || '*'] || currentOperatorMap['*']
 
-  const localOperatorMap: IOperatorMap = operatorMap || OPERATOR_TYPE_MAP
-  const dataSource = localOperatorMap[expression.fieldType || '*'] || localOperatorMap['*']
+  useEffect(() => {
+    delete node.operator
+    onChange()
+  }, [expression.modelId, expression.fieldId])
 
   return <OperatorSelectWrapper
     defaultValue={operator}
+    value={operator}
     dataSource={dataSource}
     onChange={(value, action, item) => {
       node.operator = value
