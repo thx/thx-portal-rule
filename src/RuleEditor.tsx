@@ -13,7 +13,7 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
   return <RuleConditionNodeWrapper>
     <Box direction='row' spacing={8} wrap>
       {/* 1 左侧 模型 + 字段 */}
-      <ModelAndField models={models} expression={left} />
+      <ModelAndField models={models} expression={left} node={node} />
       {/* 2 操作符 */}
       <OperatorSelect node={node} />
       {/* 3 右侧 类型 */}

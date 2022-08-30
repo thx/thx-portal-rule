@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Balloon, Box, Button, DatePicker, Icon, Input, NumberPicker, Range, Select, Switch, TimePicker } from '@alifd/next'
-import { IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRuleNodeType, ILiteralExpression, IOperatorMap } from './types/index'
+import { IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRuleNodeType, ILiteralExpression, IOperatorMap, IRuleConditionOperator } from './types/index'
 import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { RangeProps } from '@alifd/next/types/range'
@@ -26,10 +26,11 @@ export const RuleConditionNodeWrapper = styled.div`
 interface IModelAndFieldProps {
   models: IRuleModel[];
   expression: IMemberExpression;
+  node?: IRuleConditionNode;
 }
 
 // 条件 - 模型 & 字段
-export function ModelAndField ({ models: remoteModels = [], expression, ...extra }: IModelAndFieldProps) {
+export function ModelAndField ({ models: remoteModels = [], expression, node, ...extra }: IModelAndFieldProps) {
   const { onChange, modelSelectProps = {}, fieldSelectProps = {} } = useContext(RuleEditorContext)
   const { style: modelStyle = {}, ...modelSelectExtraProps } = modelSelectProps
   const { style: fieldStyle = {}, ...fieldSelectExtraProps } = fieldSelectProps
@@ -85,6 +86,10 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
         delete expression.fieldId
         delete expression.fieldName
         delete expression.fieldType
+
+        if (node && node.operator) {
+          delete node.operator
+        }
         onChange()
       }}
       style={{ width: 120, ...modelStyle }}
@@ -101,6 +106,10 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
         expression.fieldId = value
         expression.fieldName = item.name
         expression.fieldType = item.type
+        
+        if (node && node.operator) {
+          delete node.operator
+        }
         onChange()
       }}
       disabled={model === undefined}
@@ -125,20 +134,12 @@ interface IOperatorSelectProps extends SelectProps {
 
 // 操作符下拉框，优先读取自定义操作符映射列表
 export function OperatorSelect ({ node, style }: IOperatorSelectProps) {
-  const { onChange, operatorMap, operatorProps = {}, contentMap } = useContext(RuleEditorContext)
-  const { operator, left: expression, id } = node
+  const { onChange, operatorMap, operatorProps = {} } = useContext(RuleEditorContext)
+  const { operator, left: expression } = node
   const { style: operatorStyle = {} } = operatorProps
   
   const currentOperatorMap: IOperatorMap = operatorMap || OPERATOR_TYPE_MAP
   const dataSource = currentOperatorMap[expression.fieldType || '*'] || currentOperatorMap['*']
-
-  useEffect(() => {
-    if ((contentMap[id] as IRuleConditionNode)?.operator === node.operator) {
-      delete node.operator
-      onChange()
-    }
-  }, [expression.modelId, expression.fieldId])
-  // TODO: 优化model和field联动operator的判断逻辑
 
   return <OperatorSelectWrapper
     defaultValue={operator}
