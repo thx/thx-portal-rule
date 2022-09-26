@@ -3,7 +3,7 @@ import { uuid } from './shared'
 import styled from 'styled-components'
 import { Select } from '@alifd/next'
 
-export function fixContent (content: IRuleGroupNode, defaultGroupRelation: IRelation) {
+export function fixContent (content: IRuleGroupNode, defaultRelation: IRelation) {
   let changed = false
   if (!content) {
     content = {
@@ -21,7 +21,9 @@ export function fixContent (content: IRuleGroupNode, defaultGroupRelation: IRela
     changed = true
   }
   if (!content.relation) {
-    content.relation = defaultGroupRelation || IRelation.AND
+    // MO TODO defaultGroupRelation => defaultRelation
+    // 似乎应该是 defaultRuleGroupNodeRelation，含义更完整
+    content.relation = defaultRelation || IRelation.AND
     changed = true
   }
   if (!content.children || !content.children.length) {

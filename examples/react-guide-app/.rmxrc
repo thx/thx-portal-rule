@@ -11,6 +11,8 @@
       "styled-components": "styled",
       "@alifd/next": "Next"
     },
-    "devServer": {}
+    "devServer": {
+      "port": 8079
+    }
   }
 }

@@ -27,13 +27,13 @@ export default function App () {
         models={MOCK_MODEL_LIST}
         content={content}
         onChange={(nextContent) => setContent(nextContent)}
-        // defaultGroupRelation={IRelation.OR}
+        // defaultRelation={IRelation.OR}
         // operatorMap={MOCK_OPERATOR_MAP}
         // mode={IRuleMode.LITERAL}
         // maxDepth={2}
         // modelSelectProps={{ style: { width: 200 } }}
         // fieldSelectProps={{ style: { width: 250 } }}
-        // operatorProps={{ style: { width: 100 } }}
+        // operatorSelectProps={{ style: { width: 100 } }}
       />
     </div>
     <pre>{JSON.stringify(content, null, 2)}</pre>

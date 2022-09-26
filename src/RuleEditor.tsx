@@ -5,6 +5,7 @@ import { RuleEditorContext } from './RuleEditorContext'
 import useRuleEditor from './useRuleEditor'
 import { AppendChildButton, AppendSiblingButton, ExpressionTypeSelect, LiteralSetter, ModelAndField, OperatorSelect, RemoveChildButton, RuleConditionNodeWrapper } from './RuleConditionNodeParts'
 import { IRuleConditionNode, IRuleGroupNode, IRuleModel, IRuleNodeType, IRuleMode, IOperatorMap, IRelation } from './types'
+import { SelectProps } from '@alifd/next/types/select'
 
 function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; depth?: number; }) {
   const { mode, models, maxDepth } = useContext(RuleEditorContext)
@@ -38,11 +39,11 @@ function RuleGroupNode ({ node, depth = 0, hasBackground, hasBorder }: { node: I
   return (
     <RuleGroupNodeWrapper hasBackground={hasBackground} hasBorder={hasBorder}>
       <Box direction='row' spacing={16} style={{}}>
-        {/* {children && children.length > 1 && */}
+        {children && children.length > 1 &&
         <RuleGroupNodeRelationColumnWrapper>
           <RuleGroupNodeRelationColumn node={node} />
         </RuleGroupNodeRelationColumnWrapper>
-        {/* } */}
+        }
         <RuleGroupNodeBodyColumnWrapper>
           <Box direction='column' spacing={8}>
             {(children || []).map((child, index) =>
@@ -59,26 +60,43 @@ function RuleGroupNode ({ node, depth = 0, hasBackground, hasBorder }: { node: I
 }
 
 interface IRuleEditorProps {
+  /** TODO */
   mode?: IRuleMode;
+  /** TODO */
   models: IRuleModel[];
+  /** TODO */
   content: IRuleGroupNode;
+  /** TODO */
   onChange?: (content: IRuleGroupNode) => void;
+  /** TODO */
   operatorMap?: IOperatorMap;
+  /** TODO */
   maxDepth?: number;
-  defaultGroupRelation?: IRelation;
-  modelSelectProps?: { [key: string]: any; };
-  fieldSelectProps?: { [key: string]: any; };
-  operatorProps?: { [key: string]: any; };
+  /** TODO */
+  defaultRelation?: IRelation; // MO TODO
+  /** TODO */
+  modelSelectProps?: SelectProps | ((/** MO TODO 缺少参数 */) => SelectProps); // { [key: string]: any; };
+  /** TODO */
+  fieldSelectProps?: SelectProps | ((/** MO TODO 缺少参数 */) => SelectProps); // { [key: string]: any; };
+  /** TODO */
+  operatorSelectProps?: SelectProps | ((/** MO TODO 缺少参数 */) => SelectProps); // { [key: string]: any; };
 }
+
+// MO TODO disabled readonly
+// MO TODO highlight
 
 export default ({
   mode, models: remoteModels, content: remoteContent, onChange: onRemoteChange,
-  maxDepth, operatorMap: remoteOperatorMap, modelSelectProps, fieldSelectProps,
-  operatorProps, defaultGroupRelation
+  maxDepth,
+  operatorMap: remoteOperatorMap,
+  modelSelectProps, fieldSelectProps, operatorSelectProps,
+  defaultRelation
 } : IRuleEditorProps) => {
   const {
-    content, mapped, setContent, appendChild, appendSibling, appendGroupWithChild, removeChild
-  } = useRuleEditor(remoteContent, defaultGroupRelation)
+    content, mapped, setContent,
+    appendChild, appendSibling, appendGroupWithChild,
+    removeChild
+  } = useRuleEditor(remoteContent, defaultRelation)
 
   const onChange = useCallback(() => {
     setContent({ ...content })
@@ -87,21 +105,26 @@ export default ({
 
   return <RuleEditorContext.Provider
     value={{
+      //
       mode,
       models: remoteModels,
       mapped,
       contentMap: mapped,
+      //
       appendChild,
       appendSibling,
       appendGroupWithChild,
       removeChild,
+      //
       onChange,
+      //
       maxDepth,
+      // 自定义
       operatorMap: remoteOperatorMap,
       modelSelectProps,
       fieldSelectProps,
-      operatorProps,
-      defaultGroupRelation
+      operatorSelectProps,
+      defaultRelation
     }}
   >
     <RuleGroupNode node={content} />

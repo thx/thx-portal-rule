@@ -1,7 +1,7 @@
+import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Balloon, Box, Button, DatePicker, Icon, Input, NumberPicker, Range, Select, Switch, TimePicker } from '@alifd/next'
 import { IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRuleNodeType, ILiteralExpression, IOperatorMap } from './types/index'
-import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 import { RangeProps } from '@alifd/next/types/range'
 import { InputProps } from '@alifd/next/types/input'
@@ -81,9 +81,11 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
 
         expression.modelId = value
         expression.modelName = item.name
-        
+        expression.modelCode = item.code
+
         delete expression.fieldId
         delete expression.fieldName
+        delete expression.fieldCode
         delete expression.fieldType
         onChange()
       }}
@@ -94,13 +96,21 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
     <WidthAutoSelect
       defaultValue={expression.fieldId}
       value={field?.id}
-      dataSource={fieldDataSource}
+      dataSource={
+        fieldDataSource.map(item => ({
+          ...item,
+          label: item.tooltip ? <Balloon.Tooltip trigger={<div>{item.name}</div>} align='r'>{item.tooltip}</Balloon.Tooltip> : item.name
+        }))
+      }
+      valueRender={(item) => item.name}
       onChange={(value, action, item: IRuleField) => {
         setField(item)
 
         expression.fieldId = value
         expression.fieldName = item.name
+        expression.fieldCode = item.code
         expression.fieldType = item.type
+        expression.value = item.code
         onChange()
       }}
       disabled={model === undefined}
@@ -125,20 +135,18 @@ interface IOperatorSelectProps extends SelectProps {
 
 // 操作符下拉框，优先读取自定义操作符映射列表
 export function OperatorSelect ({ node, style }: IOperatorSelectProps) {
-  const { onChange, operatorMap, operatorProps = {}, contentMap } = useContext(RuleEditorContext)
-  const { operator, left: expression, id } = node
-  const { style: operatorStyle = {} } = operatorProps
-  
+  const { onChange, operatorMap, operatorSelectProps = {} } = useContext(RuleEditorContext)
+  const { operator, left: expression } = node // MO Fixed OperatorSelect 需要感知 id 吗？
+  const { style: operatorSelectStyle = {}, ...operatorSelectExtraProps } = operatorSelectProps
+
   const currentOperatorMap: IOperatorMap = operatorMap || OPERATOR_TYPE_MAP
   const dataSource = currentOperatorMap[expression.fieldType || '*'] || currentOperatorMap['*']
 
   useEffect(() => {
-    if ((contentMap[id] as IRuleConditionNode)?.operator === node.operator) {
-      delete node.operator
-      onChange()
-    }
+    if (dataSource.find(item => item.value === node.operator)) return
+    delete node.operator
+    onChange()
   }, [expression.modelId, expression.fieldId])
-  // TODO: 优化model和field联动operator的判断逻辑
 
   return <OperatorSelectWrapper
     defaultValue={operator}
@@ -148,7 +156,8 @@ export function OperatorSelect ({ node, style }: IOperatorSelectProps) {
       node.operator = value
       onChange()
     }}
-    style={{ ...style, width: 90, ...operatorStyle }}
+    style={{ ...style, width: 90, ...operatorSelectStyle }}
+    {...operatorSelectExtraProps}
   />
 }
 

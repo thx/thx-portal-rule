@@ -3,10 +3,10 @@ import { uuid } from './shared'
 import { tree2map, fixContent } from './RuleEditorParts'
 import { IRuleConditionNode, IRuleGroupNode, IRelation, IRuleNodeType, IExpressionType } from './types'
 
-export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultGroupRelation?: IRelation) {
+export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultRelation?: IRelation) {
   const [content, setContent] = useState<IRuleGroupNode>(remoteContent)
   useEffect(() => {
-    const { content: nextContent, changed } = fixContent(content, defaultGroupRelation)
+    const { content: nextContent, changed } = fixContent(content, defaultRelation)
     if (changed) setContent({ ...nextContent })
   }, [])
   const [mapped, setMapped] = useState<{ [id: string]: IRuleConditionNode | IRuleGroupNode }>({})
@@ -48,7 +48,7 @@ export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultGro
       const nextGroup: IRuleGroupNode = {
         id: uuid(),
         type: IRuleNodeType.GROUP,
-        relation: defaultGroupRelation || IRelation.AND,
+        relation: defaultRelation || IRelation.AND,
         children: []
       }
       child.parentId = nextGroup.id

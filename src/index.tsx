@@ -1,5 +1,6 @@
 /** 内置配置项 */
 export { uuid, OPERATOR_TYPE_MAP, EXPRESSION_TYPE_DATASOURCE } from './shared'
+export { tree2map } from './RuleEditorParts'
 
 /** 规则编辑器 */
 export { default as RuleEditor } from './RuleEditor'

@@ -15,7 +15,7 @@ export interface INextRecord {
  *
  */
 
-export interface IRule {
+export interface IRule { // MO TODO 似乎是没用的类型声明
   id?: number;
   content: IRuleGroupNode;
 }
@@ -25,6 +25,7 @@ export enum IRuleNodeType {
   CONDITION = 'CONDITION'
 }
 
+// MO TODO 似乎应该是 IGroupNodeRelation
 export enum IRelation {
   AND = 'AND',
   OR = 'OR'
@@ -133,7 +134,7 @@ export interface IMemberExpression {
   fieldId?: number;
   fieldName?: string;
   fieldCode?: string;
-  fieldType?: IFieldType;
+  fieldType?: IRuleFieldType;
   value?: string | any;
 }
 
@@ -170,14 +171,17 @@ export type ISetter =
   React.ReactElement
 
 export interface IRuleField {
+  /** 唯一标识。TODO 似乎会导致数据转换非常麻烦。 */
   id: number;
   name: string;
   code: string;
-  type?: IFieldType;
+  tooltip?: any;
+  type?: IRuleFieldType;
   /** 配置项的设置器 */
   setter?: ISetter;
   /** 针对设置器的配置 */
   setterProps?: { [key: string]: any; };
 }
 
-export type IFieldType = 'BOOLEAN' |'NUMBER' |'STRING' |'DATE' |'DATETIME' | 'COLLECTION' | string
+// MO FIXED IFieldType => IRuleFieldType，需要暴露这个类型声明吗？不需要，减少顶层概念的数量
+export type IRuleFieldType = 'BOOLEAN' | 'NUMBER' | 'STRING' | 'DATE' | 'DATETIME' | 'COLLECTION' | string
