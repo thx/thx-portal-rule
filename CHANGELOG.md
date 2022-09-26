@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1-alpha.13](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.5...v0.0.1-alpha.13) (2022-09-26)
+
+
+### Features
+
+* 变更首个关系节点的透出逻辑 ([81efc4a](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/81efc4a5942f8b1687103cdbafa14cb7419aaabb))
+* 开放model、field、operator的props透传入口 ([c52f370](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/c52f370d9e34c5e9e368afe5f908563129573381))
+* 操作符下拉支持autoWidth&支持字面量样式透传 ([2d6fa21](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/2d6fa2157d96c48f76d2887469dc8566874eb2c2))
+* 支持变更model清除field和operator & 去掉model的文案id ([55ecf57](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/55ecf5704489b0a1743906ee2f82a4792be2b090))
+* 支持自定义默认组关系 ([f690e88](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/f690e887514ed255d20f56fe637e10fb48308f2d))
+
 ### [0.0.1-alpha.3](https://github.com/thx/thx-portal-rule/compare/v0.0.1-alpha.2...v0.0.1-alpha.3) (2022-08-04)
 
 
