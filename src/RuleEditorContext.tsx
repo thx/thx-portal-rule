@@ -22,9 +22,9 @@ interface IRuleEditorContext {
     [id: string]: IRuleConditionNode | IRuleGroupNode
   };
   operatorMap: IOperatorMap;
-  modelSelectProps?: SelectProps;
-  fieldSelectProps?: SelectProps;
+  modelSelectProps?: SelectProps | ((/** MO TODO 缺少参数 */) => SelectProps);
+  fieldSelectProps?: SelectProps | ((/** MO TODO 缺少参数 */) => SelectProps);
   // MO TODO operatorProps => operatorSelectProps
-  operatorSelectProps?: SelectProps;
+  operatorSelectProps?: SelectProps | ((/** MO TODO 缺少参数 */) => SelectProps);
 }
 export const RuleEditorContext = createContext<IRuleEditorContext>(undefined)

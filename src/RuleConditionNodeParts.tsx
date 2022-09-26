@@ -31,8 +31,8 @@ interface IModelAndFieldProps {
 // 条件 - 模型 & 字段
 export function ModelAndField ({ models: remoteModels = [], expression, ...extra }: IModelAndFieldProps) {
   const { onChange, modelSelectProps = {}, fieldSelectProps = {} } = useContext(RuleEditorContext)
-  const { style: modelStyle = {}, ...modelSelectExtraProps } = modelSelectProps
-  const { style: fieldStyle = {}, ...fieldSelectExtraProps } = fieldSelectProps
+  const { style: modelStyle = {}, ...modelSelectExtraProps } = typeof modelSelectProps === 'function' ? modelSelectProps(/** MO TODO 缺少参数 */) : modelSelectProps
+  const { style: fieldStyle = {}, ...fieldSelectExtraProps } = typeof fieldSelectProps === 'function' ? fieldSelectProps(/** MO TODO 缺少参数 */) : fieldSelectProps
 
   const [models, setModels] = useState<IRuleModel[]>(remoteModels)
   useEffect(() => {
@@ -137,7 +137,7 @@ interface IOperatorSelectProps extends SelectProps {
 export function OperatorSelect ({ node, style }: IOperatorSelectProps) {
   const { onChange, operatorMap, operatorSelectProps = {} } = useContext(RuleEditorContext)
   const { operator, left: expression } = node // MO Fixed OperatorSelect 需要感知 id 吗？
-  const { style: operatorSelectStyle = {}, ...operatorSelectExtraProps } = operatorSelectProps
+  const { style: operatorSelectStyle = {}, ...operatorSelectExtraProps } = typeof operatorSelectProps === 'function' ? operatorSelectProps(/** MO TODO  缺少参数 */) : operatorSelectProps
 
   const currentOperatorMap: IOperatorMap = operatorMap || OPERATOR_TYPE_MAP
   const dataSource = currentOperatorMap[expression.fieldType || '*'] || currentOperatorMap['*']
