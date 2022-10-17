@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1-alpha.17](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.16...v0.0.1-alpha.17) (2022-10-17)
+
+
+### Features
+
+* modelSelectProps fieldSelectProps operatorSelectProps typeSelectProps literalSetterProps ([180d219](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/180d219218cd617c856bad9068e390b1a2b309f9))
+
 ### [0.0.1-alpha.15](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.14...v0.0.1-alpha.15) (2022-09-26)
 
 
