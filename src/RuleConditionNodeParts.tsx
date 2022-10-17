@@ -26,13 +26,12 @@ export const RuleConditionNodeWrapper = styled.div`
 interface IModelAndFieldProps {
   models: IRuleModel[];
   expression: IMemberExpression;
+  position: 'left' | 'right';
 }
 
 // 条件 - 模型 & 字段
-export function ModelAndField ({ models: remoteModels = [], expression, ...extra }: IModelAndFieldProps) {
+export function ModelAndField ({ models: remoteModels = [], expression, position, ...extra }: IModelAndFieldProps) {
   const { onChange, modelSelectProps = {}, fieldSelectProps = {} } = useContext(RuleEditorContext)
-  const { style: modelStyle = {}, ...modelSelectExtraProps } = typeof modelSelectProps === 'function' ? modelSelectProps(/** MO TODO 缺少参数 */) : modelSelectProps
-  const { style: fieldStyle = {}, ...fieldSelectExtraProps } = typeof fieldSelectProps === 'function' ? fieldSelectProps(/** MO TODO 缺少参数 */) : fieldSelectProps
 
   const [models, setModels] = useState<IRuleModel[]>(remoteModels)
   useEffect(() => {
@@ -69,6 +68,9 @@ export function ModelAndField ({ models: remoteModels = [], expression, ...extra
       model.fields.map(item => ({ ...item, label: item.name, value: item.id }))
     )
   }, [model])
+
+  const { style: modelStyle = {}, ...modelSelectExtraProps } = (typeof modelSelectProps === 'function' ? modelSelectProps(model, position, models) : modelSelectProps) || {}
+  const { style: fieldStyle = {}, ...fieldSelectExtraProps } = (typeof fieldSelectProps === 'function' ? fieldSelectProps(field, position, model?.fields) : fieldSelectProps) || {}
 
   return <Box direction='row' spacing={8} {...extra}>
     <WidthAutoSelect
@@ -173,7 +175,8 @@ interface IExpressionTypeSelectProps extends SelectProps {
 }
 
 export function ExpressionTypeSelect ({ style, expression }: IExpressionTypeSelectProps) {
-  const { onChange } = useContext(RuleEditorContext)
+  const { onChange, typeSelectProps } = useContext(RuleEditorContext)
+  const { style: typeStyle = {}, ...typeSelectExtraProps } = (typeof typeSelectProps === 'function' ? typeSelectProps() : typeSelectProps) || {}
   return <ExpressionTypeSelectWrapper
     defaultValue={expression?.type}
     value={expression?.type}
@@ -182,7 +185,8 @@ export function ExpressionTypeSelect ({ style, expression }: IExpressionTypeSele
       expression.type = value
       onChange()
     }}
-    style={{ ...style, width: 90 }}
+    style={{ ...style, ...typeStyle, width: 90 }}
+    {...typeSelectExtraProps}
   />
 }
 
@@ -201,7 +205,8 @@ const SETTER_MAP = {
 }
 
 export function LiteralSetter ({ style, node } :{ style?: any; node: IRuleConditionNode }) {
-  const { models, onChange } = useContext(RuleEditorContext)
+  const { models, onChange, literalSetterProps } = useContext(RuleEditorContext)
+  const { style: literalSetterStyle = {}, ...literalSetterExtraProps } = (typeof literalSetterProps === 'function' ? literalSetterProps() : literalSetterProps) || {}
   const { left, right } = node
 
   const [leftModel, setLeftModel] = useState<IRuleModel>()
@@ -230,8 +235,9 @@ export function LiteralSetter ({ style, node } :{ style?: any; node: IRuleCondit
       right.value = value
       onChange()
     },
-    style: { ...style, ...setterStyle },
-    disabled: !leftField
+    style: { ...style, ...setterStyle, ...literalSetterStyle },
+    disabled: !leftField,
+    ...literalSetterExtraProps
   }
   let nextSetter: ReactNode
   if (setter) {

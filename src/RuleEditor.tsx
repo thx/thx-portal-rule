@@ -1,11 +1,10 @@
 import React, { useCallback, useContext } from 'react'
 import { Box } from '@alifd/next'
 import { RuleGroupNodeRelationColumn, RuleGroupNodeBodyColumnWrapper, RuleGroupNodeWrapper, RuleGroupNodeRelationColumnWrapper } from './RuleGroupNodeParts'
-import { RuleEditorContext } from './RuleEditorContext'
+import { IFieldSelectProps, ILiteralSetterProps, IModelSelectProps, IOperatorSelectProps, ITypeSelectProps, RuleEditorContext } from './RuleEditorContext'
 import useRuleEditor from './useRuleEditor'
 import { AppendChildButton, AppendSiblingButton, ExpressionTypeSelect, LiteralSetter, ModelAndField, OperatorSelect, RemoveChildButton, RuleConditionNodeWrapper } from './RuleConditionNodeParts'
 import { IRuleConditionNode, IRuleGroupNode, IRuleModel, IRuleNodeType, IRuleMode, IOperatorMap, IRelation } from './types'
-import { SelectProps } from '@alifd/next/types/select'
 
 function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; depth?: number; }) {
   const { mode, models, maxDepth } = useContext(RuleEditorContext)
@@ -14,7 +13,7 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
   return <RuleConditionNodeWrapper>
     <Box direction='row' spacing={8} wrap>
       {/* 1 左侧 模型 + 字段 */}
-      <ModelAndField models={models} expression={left} />
+      <ModelAndField models={models} expression={left} position='left' />
       {/* 2 操作符 */}
       <OperatorSelect node={node} />
       {/* 3 右侧 类型 */}
@@ -22,7 +21,7 @@ function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; dep
       {/* 4.1 右侧 字面量 */}
       {right?.type === 'LITERAL' && <LiteralSetter node={node} />}
       {/* 4.2 右侧 模型 + 字段 */}
-      {right?.type === 'MODEL' && <ModelAndField models={models} expression={right} />}
+      {right?.type === 'MODEL' && <ModelAndField models={models} expression={right} position='right' />}
       {/* 5.1 增加同级 */}
       <AppendSiblingButton child={node} />
       {/* 5.2 增加子级 */}
@@ -74,12 +73,16 @@ interface IRuleEditorProps {
   maxDepth?: number;
   /** TODO */
   defaultRelation?: IRelation; // MO TODO
-  /** TODO */
-  modelSelectProps?: SelectProps | ((/** MO TODO 缺少参数 */) => SelectProps); // { [key: string]: any; };
-  /** TODO */
-  fieldSelectProps?: SelectProps | ((/** MO TODO 缺少参数 */) => SelectProps); // { [key: string]: any; };
-  /** TODO */
-  operatorSelectProps?: SelectProps | ((/** MO TODO 缺少参数 */) => SelectProps); // { [key: string]: any; };
+  /** 模型选择器属性 */
+  modelSelectProps?: IModelSelectProps;
+  /** 字段选择器属性 */
+  fieldSelectProps?: IFieldSelectProps;
+  /** 操作符选择期属性 */
+  operatorSelectProps?: IOperatorSelectProps;
+  /** 右侧类型选择器属性 */
+  typeSelectProps?: ITypeSelectProps;
+  /** 字面量设置器属性 */
+  literalSetterProps?: ILiteralSetterProps;
 }
 
 // MO TODO disabled readonly
@@ -89,7 +92,7 @@ export default ({
   mode, models: remoteModels, content: remoteContent, onChange: onRemoteChange,
   maxDepth,
   operatorMap: remoteOperatorMap,
-  modelSelectProps, fieldSelectProps, operatorSelectProps,
+  modelSelectProps, fieldSelectProps, operatorSelectProps, typeSelectProps, literalSetterProps,
   defaultRelation
 } : IRuleEditorProps) => {
   const {
@@ -124,6 +127,9 @@ export default ({
       modelSelectProps,
       fieldSelectProps,
       operatorSelectProps,
+      typeSelectProps,
+      literalSetterProps,
+      // 自定义
       defaultRelation
     }}
   >
