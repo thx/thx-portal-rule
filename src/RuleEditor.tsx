@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react'
 import { Box } from '@alifd/next'
 import { RuleGroupNodeRelationColumn, RuleGroupNodeBodyColumnWrapper, RuleGroupNodeWrapper, RuleGroupNodeRelationColumnWrapper } from './RuleGroupNodeParts'
-import { IFieldSelectProps, ILiteralSetterProps, IModelSelectProps, IOperatorSelectProps, ITypeSelectProps, RuleEditorContext } from './RuleEditorContext'
+import { IFieldSelectProps, ILiteralSetterProps, IModelSelectProps, IOperatorSelectProps, IRelationSelectProps, ITypeSelectProps, RuleEditorContext } from './RuleEditorContext'
 import useRuleEditor from './useRuleEditor'
 import { AppendChildButton, AppendSiblingButton, ExpressionTypeSelect, LiteralSetter, ModelAndField, OperatorSelect, RemoveChildButton, RuleConditionNodeWrapper } from './RuleConditionNodeParts'
 import { IRuleConditionNode, IRuleGroupNode, IRuleModel, IRuleNodeType, IRuleMode, IOperatorMap, IRelation } from './types'
@@ -73,6 +73,8 @@ interface IRuleEditorProps {
   maxDepth?: number;
   /** TODO */
   defaultRelation?: IRelation; // MO TODO
+  /** 关系选择器属性 */
+  relationSelectProps?: IRelationSelectProps;
   /** 模型选择器属性 */
   modelSelectProps?: IModelSelectProps;
   /** 字段选择器属性 */
@@ -93,7 +95,7 @@ export default ({
   maxDepth,
   operatorMap: remoteOperatorMap,
   modelSelectProps, fieldSelectProps, operatorSelectProps, typeSelectProps, literalSetterProps,
-  defaultRelation
+  relationSelectProps, defaultRelation
 } : IRuleEditorProps) => {
   const {
     content, mapped, setContent,
@@ -130,6 +132,7 @@ export default ({
       typeSelectProps,
       literalSetterProps,
       // 自定义
+      relationSelectProps,
       defaultRelation
     }}
   >
