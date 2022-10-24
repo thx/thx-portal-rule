@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1-alpha.18](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.17...v0.0.1-alpha.18) (2022-10-24)
+
+
+### Features
+
+* relationSelectProps ([1a8cc8b](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/1a8cc8b3b724483fd5bd2569950c39dcb3227abc))
+
 ### [0.0.1-alpha.17](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.16...v0.0.1-alpha.17) (2022-10-17)
 
 
