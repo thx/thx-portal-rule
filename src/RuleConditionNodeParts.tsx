@@ -69,8 +69,8 @@ export function ModelAndField ({ models: remoteModels = [], expression, position
     )
   }, [model])
 
-  const { style: modelStyle = {}, ...modelSelectExtraProps } = (typeof modelSelectProps === 'function' ? modelSelectProps(model, position, models) : modelSelectProps) || {}
-  const { style: fieldStyle = {}, ...fieldSelectExtraProps } = (typeof fieldSelectProps === 'function' ? fieldSelectProps(field, position, model?.fields) : fieldSelectProps) || {}
+  const { style: modelSelectStyle = {}, ...modelSelectExtraProps } = (typeof modelSelectProps === 'function' ? modelSelectProps(model, position, models) : modelSelectProps) || {}
+  const { style: fieldSelectStyle = {}, ...fieldSelectExtraProps } = (typeof fieldSelectProps === 'function' ? fieldSelectProps(field, position, model?.fields) : fieldSelectProps) || {}
 
   return <Box direction='row' spacing={8} {...extra}>
     <WidthAutoSelect
@@ -91,7 +91,7 @@ export function ModelAndField ({ models: remoteModels = [], expression, position
         delete expression.fieldType
         onChange()
       }}
-      style={{ width: 120, ...modelStyle }}
+      style={{ width: 120, ...modelSelectStyle }}
       {...modelSelectExtraProps}
       autoWidth={false}
     />
@@ -116,7 +116,7 @@ export function ModelAndField ({ models: remoteModels = [], expression, position
         onChange()
       }}
       disabled={model === undefined}
-      style={{ width: 120, ...fieldStyle }}
+      style={{ width: 120, ...fieldSelectStyle }}
       {...fieldSelectExtraProps}
       autoWidth={false}
     />
