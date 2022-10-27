@@ -10,6 +10,13 @@ export const RULE_RELATION_LIST = [
   { label: '或', value: 'OR', code: '||' }
 ]
 
+export const FORMULA_RELATION_LIST = [
+  { label: '加', value: 'ADD', code: '+' },
+  { label: '减', value: 'SUBTRACT', code: '-' },
+  { label: '乘', value: 'MULTIPLY', code: '*' },
+  { label: '除', value: 'DIVIDE', code: '/' }
+]
+
 export const OPERATOR_TYPE_MAP: IOperatorMap = {
   '*': [
     RuleConditionOperatorMap.EQUAL,

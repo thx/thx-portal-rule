@@ -1,13 +1,14 @@
 import { mock } from 'mockjs'
 import {
-  IRuleGroupNode, IRuleConditionOperator, IRelation,
+  IRuleGroupNode, IRuleConditionOperator, IRuleGroupNodeRelation,
   IRuleModel,
   OPERATOR_TYPE_MAP,
   IRuleNodeType,
   IExpressionType,
   ISetter,
   IRuleConditionNode,
-  IOperatorMap
+  IOperatorMap,
+  IFormulaGroupNodeRelation
 } from 'thx-portal-rule'
 
 // 概念
@@ -47,12 +48,12 @@ export const MOCK_MODEL_LIST: IRuleModel[] = mock({
 export const MOCK_CONTENT: IRuleGroupNode = {
   id: uuid(),
   type: IRuleNodeType.GROUP,
-  relation: IRelation.AND,
+  relation: IRuleGroupNodeRelation.AND,
   children: [
     {
       id: uuid(),
       type: IRuleNodeType.GROUP,
-      relation: IRelation.AND,
+      relation: IRuleGroupNodeRelation.AND,
       children: [
         {
           id: uuid(),
@@ -115,14 +116,146 @@ export const MOCK_CONTENT: IRuleGroupNode = {
   ]
 }
 
+export const MOCK_FORMULA: IRuleGroupNode = {
+  id: uuid(),
+  type: IRuleNodeType.GROUP,
+  relation: IFormulaGroupNodeRelation.ADD,
+  children: [
+    {
+      id: uuid(),
+      type: IRuleNodeType.GROUP,
+      relation: IFormulaGroupNodeRelation.ADD,
+      children: [
+        {
+          id: uuid(),
+          type: IRuleNodeType.CONDITION,
+          left: {
+            type: IExpressionType.MODEL,
+            modelId: MOCK_MODEL_LIST[0].id,
+            modelName: MOCK_MODEL_LIST[0].name,
+            fieldId: MOCK_MODEL_LIST[0].fields[0].id,
+            fieldName: MOCK_MODEL_LIST[0].fields[0].name,
+            fieldType: 'BOOLEAN'
+          }
+        },
+        {
+          id: uuid(),
+          type: IRuleNodeType.CONDITION,
+          left: {
+            type: IExpressionType.MODEL,
+            modelId: MOCK_MODEL_LIST[1].id,
+            modelName: MOCK_MODEL_LIST[1].name,
+            fieldId: MOCK_MODEL_LIST[1].fields[1].id,
+            fieldName: MOCK_MODEL_LIST[1].fields[1].name,
+            fieldType: 'BOOLEAN'
+          }
+        }
+      ]
+    },
+    {
+      id: uuid(),
+      type: IRuleNodeType.GROUP,
+      relation: IFormulaGroupNodeRelation.SUBTRACT,
+      children: [
+        {
+          id: uuid(),
+          type: IRuleNodeType.CONDITION,
+          left: {
+            type: IExpressionType.MODEL,
+            modelId: MOCK_MODEL_LIST[2].id,
+            modelName: MOCK_MODEL_LIST[2].name,
+            fieldId: MOCK_MODEL_LIST[2].fields[2].id,
+            fieldName: MOCK_MODEL_LIST[2].fields[2].name,
+            fieldType: 'BOOLEAN'
+          }
+        },
+        {
+          id: uuid(),
+          type: IRuleNodeType.CONDITION,
+          left: {
+            type: IExpressionType.MODEL,
+            modelId: MOCK_MODEL_LIST[3].id,
+            modelName: MOCK_MODEL_LIST[3].name,
+            fieldId: MOCK_MODEL_LIST[3].fields[3].id,
+            fieldName: MOCK_MODEL_LIST[3].fields[3].name,
+            fieldType: 'BOOLEAN'
+          }
+        }
+      ]
+    },
+    {
+      id: uuid(),
+      type: IRuleNodeType.GROUP,
+      relation: IFormulaGroupNodeRelation.MULTIPLY,
+      children: [
+        {
+          id: uuid(),
+          type: IRuleNodeType.CONDITION,
+          left: {
+            type: IExpressionType.MODEL,
+            modelId: MOCK_MODEL_LIST[4].id,
+            modelName: MOCK_MODEL_LIST[4].name,
+            fieldId: MOCK_MODEL_LIST[4].fields[4].id,
+            fieldName: MOCK_MODEL_LIST[4].fields[4].name,
+            fieldType: 'BOOLEAN'
+          }
+        },
+        {
+          id: uuid(),
+          type: IRuleNodeType.CONDITION,
+          left: {
+            type: IExpressionType.MODEL,
+            modelId: MOCK_MODEL_LIST[5].id,
+            modelName: MOCK_MODEL_LIST[5].name,
+            fieldId: MOCK_MODEL_LIST[5].fields[5].id,
+            fieldName: MOCK_MODEL_LIST[5].fields[5].name,
+            fieldType: 'BOOLEAN'
+          }
+        }
+      ]
+    },
+    {
+      id: uuid(),
+      type: IRuleNodeType.GROUP,
+      relation: IFormulaGroupNodeRelation.DIVIDE,
+      children: [
+        {
+          id: uuid(),
+          type: IRuleNodeType.CONDITION,
+          left: {
+            type: IExpressionType.MODEL,
+            modelId: MOCK_MODEL_LIST[6].id,
+            modelName: MOCK_MODEL_LIST[6].name,
+            fieldId: MOCK_MODEL_LIST[6].fields[6].id,
+            fieldName: MOCK_MODEL_LIST[6].fields[6].name,
+            fieldType: 'BOOLEAN'
+          }
+        },
+        {
+          id: uuid(),
+          type: IRuleNodeType.CONDITION,
+          left: {
+            type: IExpressionType.MODEL,
+            modelId: MOCK_MODEL_LIST[7].id,
+            modelName: MOCK_MODEL_LIST[7].name,
+            fieldId: MOCK_MODEL_LIST[7].fields[7].id,
+            fieldName: MOCK_MODEL_LIST[7].fields[7].name,
+            fieldType: 'BOOLEAN'
+          }
+        }
+      ]
+    }
+  ]
+}
+
 export const MOCK_OPERATOR_MAP: IOperatorMap = {
   '*': [
     { label: '等于', value: 'EQUAL' },
-    { label: '不等于.', value: 'NOT_EQUAL' },
+    { label: '不等于.', value: 'NOT_EQUAL' }
   ],
   'BOOLEAN': [
     { label: '等于', value: 'EQUAL' },
     { label: '不等于', value: 'NOT_EQUAL' },
-    { label: '严格等于', value: 'STRICT_EQUAL' },
+    { label: '严格等于', value: 'STRICT_EQUAL' }
   ]
 }

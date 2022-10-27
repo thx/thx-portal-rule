@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { uuid } from './shared'
 import { tree2map, fixContent } from './RuleEditorParts'
-import { IRuleConditionNode, IRuleGroupNode, IRuleGroupNodeRelation, IRuleNodeType, IExpressionType } from './types'
+import { IRuleConditionNode, IRuleGroupNode, IRuleGroupNodeRelation, IRuleNodeType, IExpressionType, IFormulaGroupNodeRelation } from './types'
 
-export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultRelation?: IRuleGroupNodeRelation) {
+export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultRelation?: IRuleGroupNodeRelation | IFormulaGroupNodeRelation) {
   const [content, setContent] = useState<IRuleGroupNode>(remoteContent)
   useEffect(() => {
     const { content: nextContent, changed } = fixContent(content, defaultRelation)

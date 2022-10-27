@@ -31,6 +31,13 @@ export enum IRuleGroupNodeRelation {
   OR = 'OR'
 }
 
+export enum IFormulaGroupNodeRelation {
+  ADD = 'ADD',
+  SUBTRACT = 'SUBTRACT',
+  MULTIPLY = 'MULTIPLY',
+  DIVIDE = 'DIVIDE'
+}
+
 // MO TODO https://www.chaijs.com/api/bdd/#method_not
 // Quantifiers asterisk *
 export enum IRuleConditionOperator {
@@ -142,7 +149,7 @@ export interface IRuleGroupNode {
   id: number;
   parentId?: number;
   type: IRuleNodeType.GROUP;
-  relation?: IRuleGroupNodeRelation,
+  relation?: IRuleGroupNodeRelation | IFormulaGroupNodeRelation,
   children?: (IRuleConditionNode | IRuleGroupNode)[];
 }
 

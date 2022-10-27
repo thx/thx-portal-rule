@@ -4,7 +4,7 @@ import { RuleGroupNodeRelationColumn, RuleGroupNodeBodyColumnWrapper, RuleGroupN
 import { IFieldSelectProps, ILiteralSetterProps, IModelSelectProps, IOperatorSelectProps, IRelationSelectProps, ITypeSelectProps, RuleEditorContext } from './RuleEditorContext'
 import useRuleEditor from './useRuleEditor'
 import { AppendChildButton, AppendSiblingButton, ExpressionTypeSelect, LiteralSetter, ModelAndField, OperatorSelect, RemoveChildButton, RuleConditionNodeWrapper } from './RuleConditionNodeParts'
-import { IRuleConditionNode, IRuleGroupNode, IRuleModel, IRuleNodeType, IRuleMode, IOperatorMap, IRelation } from './types'
+import { IRuleConditionNode, IRuleGroupNode, IRuleModel, IRuleNodeType, IRuleMode, IOperatorMap, IRuleGroupNodeRelation, IFormulaGroupNodeRelation } from './types'
 
 function RuleConditionNode ({ node, depth = 0 } :{ node: IRuleConditionNode; depth?: number; }) {
   const { mode, models, maxDepth } = useContext(RuleEditorContext)
@@ -58,21 +58,21 @@ function RuleGroupNode ({ node, depth = 0, hasBackground, hasBorder }: { node: I
   )
 }
 
-interface IRuleEditorProps {
-  /** TODO */
+export interface IRuleEditorProps {
+  /** 模式，默认为 MODEL，如果传入 LITERAL，则表达式右侧只有字面量。 */
   mode?: IRuleMode;
-  /** TODO */
+  /** 模型选择器的可选值。 */
   models: IRuleModel[];
-  /** TODO */
+  /** 值。 */
   content: IRuleGroupNode;
-  /** TODO */
+  /** 当值发生改变时被触发。 */
   onChange?: (content: IRuleGroupNode) => void;
-  /** TODO */
+  /** 自定义可选的操作符，格式参见 OPERATOR_TYPE_MAP。 */
   operatorMap?: IOperatorMap;
-  /** TODO */
+  /** 表达式的最大嵌套深度，默认不限制。 */
   maxDepth?: number;
-  /** TODO */
-  defaultRelation?: IRelation; // MO TODO
+  /** 表达式之间的默认关系。 */
+  defaultRelation?: IRuleGroupNodeRelation | IFormulaGroupNodeRelation;
   /** 关系选择器属性 */
   relationSelectProps?: IRelationSelectProps;
   /** 模型选择器属性 */

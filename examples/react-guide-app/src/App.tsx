@@ -1,9 +1,10 @@
+import { Divider } from '@alifd/next'
 import React, { useState } from 'react'
 import { createGlobalStyle } from 'styled-components'
-import { IRuleMode, RuleEditor, IRelation } from 'thx-portal-rule'
+import { IRuleMode, RuleEditor, IRuleGroupNode, IFormulaGroupNodeRelation, FORMULA_RELATION_LIST, FormulaEditor, IRuleGroupNodeRelation } from 'thx-portal-rule'
 
 import './App.scss'
-import { MOCK_CONTENT, MOCK_MODEL_LIST, MOCK_OPERATOR_MAP } from './model'
+import { MOCK_CONTENT, MOCK_FORMULA, MOCK_MODEL_LIST, MOCK_OPERATOR_MAP } from './model'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -19,7 +20,8 @@ const GlobalStyle = createGlobalStyle`
 `
 
 export default function App () {
-  const [content, setContent] = useState(MOCK_CONTENT)
+  const [content, setContent] = useState<IRuleGroupNode>(MOCK_CONTENT)
+  const [formula, setFormula] = useState<IRuleGroupNode>(MOCK_FORMULA)
   return <>
     <GlobalStyle />
     <div style={{ padding: 24, border: '1px solid #E6E6E6', backgroundColor: 'white' }}>
@@ -27,7 +29,7 @@ export default function App () {
         models={MOCK_MODEL_LIST}
         content={content}
         onChange={(nextContent) => setContent(nextContent)}
-        // defaultRelation={IRelation.OR}
+        defaultRelation={IRuleGroupNodeRelation.OR}
         // operatorMap={MOCK_OPERATOR_MAP}
         // mode={IRuleMode.LITERAL}
         // maxDepth={2}
@@ -37,5 +39,14 @@ export default function App () {
       />
     </div>
     <pre>{JSON.stringify(content, null, 2)}</pre>
+    <Divider />
+    <div style={{ padding: 24, border: '1px solid #E6E6E6', backgroundColor: 'white' }}>
+      <FormulaEditor
+        models={MOCK_MODEL_LIST}
+        content={formula}
+        onChange={(nextContent) => setFormula(nextContent)}
+      />
+    </div>
+    <pre>{JSON.stringify(formula, null, 2)}</pre>
   </>
 }
