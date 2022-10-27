@@ -1,4 +1,4 @@
-import { IRuleGroupNode, IRuleConditionNode, IRuleModel, IRuleMode, IOperatorMap, IRelation, IRuleField } from './types/index'
+import { IRuleGroupNode, IRuleConditionNode, IRuleModel, IRuleMode, IOperatorMap, IRuleGroupNodeRelation, IRuleField } from './types/index'
 import { createContext } from 'react'
 import moment from 'moment'
 import { SelectProps } from '@alifd/next/types/select'
@@ -23,7 +23,7 @@ interface IRuleEditorContext {
   removeChild: (child: IRuleConditionNode) => void;
   onChange: (nextContent?: any) => void;
   maxDepth?: number;
-  defaultRelation?: IRelation;
+  defaultRelation?: IRuleGroupNodeRelation;
   /** @deprecated => contentMap */
   mapped: {
     [id: string]: IRuleConditionNode | IRuleGroupNode

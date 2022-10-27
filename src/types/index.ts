@@ -25,8 +25,8 @@ export enum IRuleNodeType {
   CONDITION = 'CONDITION'
 }
 
-// MO TODO 似乎应该是 IGroupNodeRelation
-export enum IRelation {
+// MO FIXED 似乎应该是 IRuleGroupNodeRelation
+export enum IRuleGroupNodeRelation {
   AND = 'AND',
   OR = 'OR'
 }
@@ -142,7 +142,7 @@ export interface IRuleGroupNode {
   id: number;
   parentId?: number;
   type: IRuleNodeType.GROUP;
-  relation?: IRelation,
+  relation?: IRuleGroupNodeRelation,
   children?: (IRuleConditionNode | IRuleGroupNode)[];
 }
 

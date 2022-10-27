@@ -5,6 +5,11 @@ export function uuid () {
   return Date.now() + ++__uuid__
 }
 
+export const RULE_RELATION_LIST = [
+  { label: '且', value: 'AND', code: '&&' },
+  { label: '或', value: 'OR', code: '||' }
+]
+
 export const OPERATOR_TYPE_MAP: IOperatorMap = {
   '*': [
     RuleConditionOperatorMap.EQUAL,

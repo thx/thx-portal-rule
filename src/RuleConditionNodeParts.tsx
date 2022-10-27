@@ -2,7 +2,6 @@ import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Balloon, Box, Button, DatePicker, Icon, Input, NumberPicker, Range, Select, Switch, TimePicker } from '@alifd/next'
 import { IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRuleNodeType, ILiteralExpression, IOperatorMap } from './types/index'
-import moment from 'moment'
 import { RangeProps } from '@alifd/next/types/range'
 import { InputProps } from '@alifd/next/types/input'
 import { DatePickerProps, MonthPickerProps, RangePickerProps, YearPickerProps } from '@alifd/next/types/date-picker'
@@ -12,7 +11,6 @@ import { WidthAutoSelect } from './RuleEditorParts'
 import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP } from './shared'
 import { SelectProps } from '@alifd/next/types/select'
 import { TimePickerProps } from '@alifd/next/types/time-picker'
-moment.locale('zh-cn')
 
 // 条件 - 外层
 export const RuleConditionNodeWrapper = styled.div`

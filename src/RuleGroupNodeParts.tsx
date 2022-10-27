@@ -2,11 +2,9 @@ import React, { useContext } from 'react'
 import styled, { css } from 'styled-components'
 import { Box, Button } from '@alifd/next'
 import { IRuleGroupNode, IRuleNodeType, IExpressionType } from './types/index'
-import { uuid } from './shared'
-import moment from 'moment'
+import { RULE_RELATION_LIST, uuid } from './shared'
 import { RuleEditorContext } from './RuleEditorContext'
 import { WidthAutoSelect } from './RuleEditorParts'
-moment.locale('zh-cn')
 
 export const RelationSelect = styled(WidthAutoSelect)`
   .next-select-inner {
@@ -87,10 +85,7 @@ export function RuleGroupNodeRelationColumn ({ style, node }: { style?: any; nod
       <RelationSelect
         defaultValue={node.relation}
         value={node.relation}
-        dataSource={[
-          { label: '且', value: 'AND' },
-          { label: '或', value: 'OR' }
-        ]}
+        dataSource={RULE_RELATION_LIST}
         style={{ width: 60, ...relationSelectStyle }}
         {...relationSelectExtraProps}
         onChange={(value, action, item) => {
