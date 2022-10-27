@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1-alpha.19](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.18...v0.0.1-alpha.19) (2022-10-27)
+
+
+### Features
+
+* FormulaEditor ([9b20865](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/9b208657fb8de820392fe1338e18cd6d43e516ed))
+
 ### [0.0.1-alpha.18](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.17...v0.0.1-alpha.18) (2022-10-24)
 
 
