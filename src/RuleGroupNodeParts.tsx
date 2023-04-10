@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import styled, { css } from 'styled-components'
 import { Box, Button } from '@alifd/next'
 import { IRuleGroupNode, IRuleNodeType, IExpressionType } from './types/index'
-import { RULE_RELATION_LIST, uuid } from './shared'
+import { RULE_RELATION_LIST, uuid } from './shared/index'
 import { RuleEditorContext } from './RuleEditorContext'
 import { WidthAutoSelect } from './RuleEditorParts'
 

@@ -20,12 +20,12 @@ const MOCK_MODEL_LIST: IRuleModel[] = mock({
   'list|10': [{
     'id|1000-9999': 1,
     name: '模型@cword(5)',
-    coee: '@word(5)',
+    code: '@word(5)',
     'fields|10': [
       {
         'id|1000-9999': 1,
         name: '字段@cword(5)',
-        coee: '@word(5)'
+        code: '@word(5)'
       }
     ]
   }]

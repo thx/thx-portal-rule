@@ -8,7 +8,7 @@ import { DatePickerProps, MonthPickerProps, RangePickerProps, YearPickerProps } 
 import { NumberPickerProps } from '@alifd/next/types/number-picker'
 import { RuleEditorContext } from './RuleEditorContext'
 import { WidthAutoSelect } from './RuleEditorParts'
-import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP } from './shared'
+import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP } from './shared/index'
 import { SelectProps } from '@alifd/next/types/select'
 import { TimePickerProps } from '@alifd/next/types/time-picker'
 
@@ -193,12 +193,12 @@ const SETTER_MAP = {
   NumberSetter: ({ style, ...extra }: NumberPickerProps) => <NumberPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
   RangeSetter: ({ style, ...extra }: RangeProps) => <Range style={{ width: 'var(--s-30, 120px)', padding: '0 calc(var(--range-size-m-slider-hw) / 2)', ...style }} {...extra} />,
   TextSetter: ({ style, ...extra }: InputProps) => <Input style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
-  DateSetter: ({ style, ...extra }: DatePickerProps) => <DatePicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
-  DateTimeSetter: ({ style, ...extra }: DatePickerProps) => <DatePicker showTime style={{ width: 'var(--s-45, 180px)', ...style }} {...extra} />,
-  YearSetter: ({ style, ...extra }: YearPickerProps) => <DatePicker.YearPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
-  MonthSetter: ({ style, ...extra }: MonthPickerProps) => <DatePicker.MonthPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
-  RangeDateSetter: ({ style, ...extra }: RangePickerProps) => <DatePicker.RangePicker style={{ ...style }} {...extra} />,
-  RangeDateTimeSetter: ({ style, ...extra }: RangePickerProps) => <DatePicker.RangePicker showTime style={{ ...style }} {...extra} />,
+  DateSetter: ({ style, ...extra }: DatePickerProps) => <DatePicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} onChange={(value: any) => extra.onChange(value?.format ? value.format('YYYY-MM-DD') : value)} />,
+  DateTimeSetter: ({ style, ...extra }: DatePickerProps) => <DatePicker showTime style={{ width: 'var(--s-45, 180px)', ...style }} {...extra} onChange={(value: any) => extra.onChange(value?.format ? value.format('YYYY-MM-DD HH:mm:ss') : value)} />,
+  YearSetter: ({ style, ...extra }: YearPickerProps) => <DatePicker.YearPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} onChange={(value: any) => extra.onChange(value?.format ? value.format('YYYY') : value)} />,
+  MonthSetter: ({ style, ...extra }: MonthPickerProps) => <DatePicker.MonthPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} onChange={(value: any) => extra.onChange(value?.format ? value.format('YYYY-MM') : value)} />,
+  RangeDateSetter: ({ style, ...extra }: RangePickerProps) => <DatePicker.RangePicker style={{ ...style }} {...extra} onChange={([v1, v2]: any[]) => extra.onChange([v1?.format ? v1.format('YYYY-MM-DD') : v1, v2?.format ? v2.format('YYYY-MM-DD') : v2])} />,
+  RangeDateTimeSetter: ({ style, ...extra }: RangePickerProps) => <DatePicker.RangePicker showTime style={{ ...style }} {...extra} onChange={([v1, v2]: any[]) => extra.onChange([v1?.format ? v1.format('YYYY-MM-DD HH:mm:ss') : v1, v2?.format ? v2.format('YYYY-MM-DD HH:mm:ss') : v2])} />,
   TimeSetter: ({ style, ...extra }: TimePickerProps) => <TimePicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />
 }
 
@@ -228,6 +228,7 @@ export function LiteralSetter ({ style, node } :{ style?: any; node: IRuleCondit
   const { setter, setterProps = {} } = leftField || {}
   const { style: setterStyle = {} } = setterProps
   const extraProps = {
+    defaultChecked: right.value,
     defaultValue: right.value,
     onChange: (value) => {
       right.value = value

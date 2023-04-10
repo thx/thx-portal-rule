@@ -3,23 +3,6 @@
 
 import React from 'react'
 
-/**
- *
- */
-export interface INextRecord {
-  label: string;
-  value: any
-}
-
-/**
- *
- */
-
-export interface IRule { // MO TODO 似乎是没用的类型声明
-  id?: number;
-  content: IRuleGroupNode;
-}
-
 export enum IRuleNodeType {
   GROUP = 'GROUP',
   CONDITION = 'CONDITION'

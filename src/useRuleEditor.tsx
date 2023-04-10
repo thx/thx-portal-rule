@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { uuid } from './shared'
+import { uuid } from './shared/index'
 import { tree2map, fixContent } from './RuleEditorParts'
 import { IRuleConditionNode, IRuleGroupNode, IRuleGroupNodeRelation, IRuleNodeType, IExpressionType, IFormulaGroupNodeRelation } from './types'
 

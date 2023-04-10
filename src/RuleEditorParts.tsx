@@ -1,5 +1,5 @@
 import { IRuleGroupNode, IRuleConditionNode, IRuleGroupNodeRelation, IRuleNodeType, IExpressionType, IFormulaGroupNodeRelation } from './types/index'
-import { uuid } from './shared'
+import { uuid } from './shared/index'
 import styled from 'styled-components'
 import { Select } from '@alifd/next'
 

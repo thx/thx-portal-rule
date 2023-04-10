@@ -1,6 +1,6 @@
 import React from 'react'
 import RuleEditor, { IRuleEditorProps } from './RuleEditor'
-import { FORMULA_RELATION_LIST } from './shared'
+import { FORMULA_RELATION_LIST } from './shared/index'
 import { IFormulaGroupNodeRelation } from './types'
 
 export default (props : IRuleEditorProps) => {
