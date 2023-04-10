@@ -2,11 +2,9 @@ import React, { useContext } from 'react'
 import styled, { css } from 'styled-components'
 import { Box, Button } from '@alifd/next'
 import { IRuleGroupNode, IRuleNodeType, IExpressionType } from './types/index'
-import { uuid } from './shared'
-import moment from 'moment'
+import { RULE_RELATION_LIST, uuid } from './shared/index'
 import { RuleEditorContext } from './RuleEditorContext'
 import { WidthAutoSelect } from './RuleEditorParts'
-moment.locale('zh-cn')
 
 export const RelationSelect = styled(WidthAutoSelect)`
   .next-select-inner {
@@ -76,7 +74,8 @@ const BracketBottom = styled(Bracket)`
 `
 
 export function RuleGroupNodeRelationColumn ({ style, node }: { style?: any; node: IRuleGroupNode; }) {
-  const { onChange } = useContext(RuleEditorContext)
+  const { relationSelectProps, onChange } = useContext(RuleEditorContext)
+  const { style: relationSelectStyle = {}, ...relationSelectExtraProps } = (typeof relationSelectProps === 'function' ? relationSelectProps(/** MO TODO 缺少参数 */) : relationSelectProps) || {}
   return <Box direction='column' align='center' style={style}>
     {/* 1 */}
     {/* <Box flex={1} style={{ width: '38.2%', borderLeft: '1px solid #E6E6E6', borderTop: '1px solid #E6E6E6', alignSelf: 'flex-end' }} /> */}
@@ -86,11 +85,9 @@ export function RuleGroupNodeRelationColumn ({ style, node }: { style?: any; nod
       <RelationSelect
         defaultValue={node.relation}
         value={node.relation}
-        dataSource={[
-          { label: '且', value: 'AND' },
-          { label: '或', value: 'OR' }
-        ]}
-        style={{ width: 60 }}
+        dataSource={RULE_RELATION_LIST}
+        style={{ width: 60, ...relationSelectStyle }}
+        {...relationSelectExtraProps}
         onChange={(value, action, item) => {
           node.relation = value
           onChange()

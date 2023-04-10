@@ -1,18 +1,16 @@
+import React, { ReactNode, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Balloon, Box, Button, DatePicker, Icon, Input, NumberPicker, Range, Select, Switch, TimePicker } from '@alifd/next'
-import { IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRuleNodeType, ILiteralExpression, IOperatorMap, IRuleConditionOperator } from './types/index'
-import React, { ReactNode, useContext, useEffect, useState } from 'react'
-import moment from 'moment'
+import { IRuleConditionNode, IRuleField, IMemberExpression, IRuleModel, IRuleNodeType, ILiteralExpression, IOperatorMap } from './types/index'
 import { RangeProps } from '@alifd/next/types/range'
 import { InputProps } from '@alifd/next/types/input'
 import { DatePickerProps, MonthPickerProps, RangePickerProps, YearPickerProps } from '@alifd/next/types/date-picker'
 import { NumberPickerProps } from '@alifd/next/types/number-picker'
 import { RuleEditorContext } from './RuleEditorContext'
 import { WidthAutoSelect } from './RuleEditorParts'
-import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP } from './shared'
+import { EXPRESSION_TYPE_DATASOURCE, OPERATOR_TYPE_MAP } from './shared/index'
 import { SelectProps } from '@alifd/next/types/select'
 import { TimePickerProps } from '@alifd/next/types/time-picker'
-moment.locale('zh-cn')
 
 // 条件 - 外层
 export const RuleConditionNodeWrapper = styled.div`
@@ -26,14 +24,12 @@ export const RuleConditionNodeWrapper = styled.div`
 interface IModelAndFieldProps {
   models: IRuleModel[];
   expression: IMemberExpression;
-  node?: IRuleConditionNode;
+  position: 'left' | 'right';
 }
 
 // 条件 - 模型 & 字段
-export function ModelAndField ({ models: remoteModels = [], expression, node, ...extra }: IModelAndFieldProps) {
+export function ModelAndField ({ models: remoteModels = [], expression, position, ...extra }: IModelAndFieldProps) {
   const { onChange, modelSelectProps = {}, fieldSelectProps = {} } = useContext(RuleEditorContext)
-  const { style: modelStyle = {}, ...modelSelectExtraProps } = modelSelectProps
-  const { style: fieldStyle = {}, ...fieldSelectExtraProps } = fieldSelectProps
 
   const [models, setModels] = useState<IRuleModel[]>(remoteModels)
   useEffect(() => {
@@ -71,6 +67,9 @@ export function ModelAndField ({ models: remoteModels = [], expression, node, ..
     )
   }, [model])
 
+  const { style: modelSelectStyle = {}, ...modelSelectExtraProps } = (typeof modelSelectProps === 'function' ? modelSelectProps(model, position, models) : modelSelectProps) || {}
+  const { style: fieldSelectStyle = {}, ...fieldSelectExtraProps } = (typeof fieldSelectProps === 'function' ? fieldSelectProps(field, position, model?.fields) : fieldSelectProps) || {}
+
   return <Box direction='row' spacing={8} {...extra}>
     <WidthAutoSelect
       defaultValue={expression.modelId}
@@ -82,38 +81,40 @@ export function ModelAndField ({ models: remoteModels = [], expression, node, ..
 
         expression.modelId = value
         expression.modelName = item.name
-        
+        expression.modelCode = item.code
+
         delete expression.fieldId
         delete expression.fieldName
+        delete expression.fieldCode
         delete expression.fieldType
-
-        if (node && node.operator) {
-          delete node.operator
-        }
         onChange()
       }}
-      style={{ width: 120, ...modelStyle }}
+      style={{ width: 120, ...modelSelectStyle }}
       {...modelSelectExtraProps}
       autoWidth={false}
     />
     <WidthAutoSelect
       defaultValue={expression.fieldId}
       value={field?.id}
-      dataSource={fieldDataSource}
+      dataSource={
+        fieldDataSource.map(item => ({
+          ...item,
+          label: item.tooltip ? <Balloon.Tooltip trigger={<div>{item.name}</div>} align='r'>{item.tooltip}</Balloon.Tooltip> : item.name
+        }))
+      }
+      valueRender={(item) => item.name}
       onChange={(value, action, item: IRuleField) => {
         setField(item)
 
         expression.fieldId = value
         expression.fieldName = item.name
+        expression.fieldCode = item.code
         expression.fieldType = item.type
-        
-        if (node && node.operator) {
-          delete node.operator
-        }
+        expression.value = item.code
         onChange()
       }}
       disabled={model === undefined}
-      style={{ width: 120, ...fieldStyle }}
+      style={{ width: 120, ...fieldSelectStyle }}
       {...fieldSelectExtraProps}
       autoWidth={false}
     />
@@ -134,12 +135,18 @@ interface IOperatorSelectProps extends SelectProps {
 
 // 操作符下拉框，优先读取自定义操作符映射列表
 export function OperatorSelect ({ node, style }: IOperatorSelectProps) {
-  const { onChange, operatorMap, operatorProps = {} } = useContext(RuleEditorContext)
-  const { operator, left: expression } = node
-  const { style: operatorStyle = {} } = operatorProps
-  
+  const { onChange, operatorMap, operatorSelectProps = {} } = useContext(RuleEditorContext)
+  const { operator, left: expression } = node // MO Fixed OperatorSelect 需要感知 id 吗？
+  const { style: operatorSelectStyle = {}, ...operatorSelectExtraProps } = typeof operatorSelectProps === 'function' ? operatorSelectProps(/** MO TODO  缺少参数 */) : operatorSelectProps
+
   const currentOperatorMap: IOperatorMap = operatorMap || OPERATOR_TYPE_MAP
   const dataSource = currentOperatorMap[expression.fieldType || '*'] || currentOperatorMap['*']
+
+  useEffect(() => {
+    if (dataSource.find(item => item.value === node.operator)) return
+    delete node.operator
+    onChange()
+  }, [expression.modelId, expression.fieldId])
 
   return <OperatorSelectWrapper
     defaultValue={operator}
@@ -149,7 +156,8 @@ export function OperatorSelect ({ node, style }: IOperatorSelectProps) {
       node.operator = value
       onChange()
     }}
-    style={{ ...style, width: 90, ...operatorStyle }}
+    style={{ ...style, width: 90, ...operatorSelectStyle }}
+    {...operatorSelectExtraProps}
   />
 }
 
@@ -165,7 +173,8 @@ interface IExpressionTypeSelectProps extends SelectProps {
 }
 
 export function ExpressionTypeSelect ({ style, expression }: IExpressionTypeSelectProps) {
-  const { onChange } = useContext(RuleEditorContext)
+  const { onChange, typeSelectProps } = useContext(RuleEditorContext)
+  const { style: typeStyle = {}, ...typeSelectExtraProps } = (typeof typeSelectProps === 'function' ? typeSelectProps() : typeSelectProps) || {}
   return <ExpressionTypeSelectWrapper
     defaultValue={expression?.type}
     value={expression?.type}
@@ -174,7 +183,8 @@ export function ExpressionTypeSelect ({ style, expression }: IExpressionTypeSele
       expression.type = value
       onChange()
     }}
-    style={{ ...style, width: 90 }}
+    style={{ ...style, ...typeStyle, width: 90 }}
+    {...typeSelectExtraProps}
   />
 }
 
@@ -183,17 +193,18 @@ const SETTER_MAP = {
   NumberSetter: ({ style, ...extra }: NumberPickerProps) => <NumberPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
   RangeSetter: ({ style, ...extra }: RangeProps) => <Range style={{ width: 'var(--s-30, 120px)', padding: '0 calc(var(--range-size-m-slider-hw) / 2)', ...style }} {...extra} />,
   TextSetter: ({ style, ...extra }: InputProps) => <Input style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
-  DateSetter: ({ style, ...extra }: DatePickerProps) => <DatePicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
-  DateTimeSetter: ({ style, ...extra }: DatePickerProps) => <DatePicker showTime style={{ width: 'var(--s-45, 180px)', ...style }} {...extra} />,
-  YearSetter: ({ style, ...extra }: YearPickerProps) => <DatePicker.YearPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
-  MonthSetter: ({ style, ...extra }: MonthPickerProps) => <DatePicker.MonthPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />,
-  RangeDateSetter: ({ style, ...extra }: RangePickerProps) => <DatePicker.RangePicker style={{ ...style }} {...extra} />,
-  RangeDateTimeSetter: ({ style, ...extra }: RangePickerProps) => <DatePicker.RangePicker showTime style={{ ...style }} {...extra} />,
+  DateSetter: ({ style, ...extra }: DatePickerProps) => <DatePicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} onChange={(value: any) => extra.onChange(value?.format ? value.format('YYYY-MM-DD') : value)} />,
+  DateTimeSetter: ({ style, ...extra }: DatePickerProps) => <DatePicker showTime style={{ width: 'var(--s-45, 180px)', ...style }} {...extra} onChange={(value: any) => extra.onChange(value?.format ? value.format('YYYY-MM-DD HH:mm:ss') : value)} />,
+  YearSetter: ({ style, ...extra }: YearPickerProps) => <DatePicker.YearPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} onChange={(value: any) => extra.onChange(value?.format ? value.format('YYYY') : value)} />,
+  MonthSetter: ({ style, ...extra }: MonthPickerProps) => <DatePicker.MonthPicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} onChange={(value: any) => extra.onChange(value?.format ? value.format('YYYY-MM') : value)} />,
+  RangeDateSetter: ({ style, ...extra }: RangePickerProps) => <DatePicker.RangePicker style={{ ...style }} {...extra} onChange={([v1, v2]: any[]) => extra.onChange([v1?.format ? v1.format('YYYY-MM-DD') : v1, v2?.format ? v2.format('YYYY-MM-DD') : v2])} />,
+  RangeDateTimeSetter: ({ style, ...extra }: RangePickerProps) => <DatePicker.RangePicker showTime style={{ ...style }} {...extra} onChange={([v1, v2]: any[]) => extra.onChange([v1?.format ? v1.format('YYYY-MM-DD HH:mm:ss') : v1, v2?.format ? v2.format('YYYY-MM-DD HH:mm:ss') : v2])} />,
   TimeSetter: ({ style, ...extra }: TimePickerProps) => <TimePicker style={{ width: 'var(--s-30, 120px)', ...style }} {...extra} />
 }
 
 export function LiteralSetter ({ style, node } :{ style?: any; node: IRuleConditionNode }) {
-  const { models, onChange } = useContext(RuleEditorContext)
+  const { models, onChange, literalSetterProps } = useContext(RuleEditorContext)
+  const { style: literalSetterStyle = {}, ...literalSetterExtraProps } = (typeof literalSetterProps === 'function' ? literalSetterProps() : literalSetterProps) || {}
   const { left, right } = node
 
   const [leftModel, setLeftModel] = useState<IRuleModel>()
@@ -217,13 +228,15 @@ export function LiteralSetter ({ style, node } :{ style?: any; node: IRuleCondit
   const { setter, setterProps = {} } = leftField || {}
   const { style: setterStyle = {} } = setterProps
   const extraProps = {
+    defaultChecked: right.value,
     defaultValue: right.value,
     onChange: (value) => {
       right.value = value
       onChange()
     },
-    style: { ...style, ...setterStyle },
-    disabled: !leftField
+    style: { ...style, ...setterStyle, ...literalSetterStyle },
+    disabled: !leftField,
+    ...literalSetterExtraProps
   }
   let nextSetter: ReactNode
   if (setter) {

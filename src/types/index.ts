@@ -3,31 +3,22 @@
 
 import React from 'react'
 
-/**
- *
- */
-export interface INextRecord {
-  label: string;
-  value: any
-}
-
-/**
- *
- */
-
-export interface IRule {
-  id?: number;
-  content: IRuleGroupNode;
-}
-
 export enum IRuleNodeType {
   GROUP = 'GROUP',
   CONDITION = 'CONDITION'
 }
 
-export enum IRelation {
+// MO FIXED 似乎应该是 IRuleGroupNodeRelation
+export enum IRuleGroupNodeRelation {
   AND = 'AND',
   OR = 'OR'
+}
+
+export enum IFormulaGroupNodeRelation {
+  ADD = 'ADD',
+  SUBTRACT = 'SUBTRACT',
+  MULTIPLY = 'MULTIPLY',
+  DIVIDE = 'DIVIDE'
 }
 
 // MO TODO https://www.chaijs.com/api/bdd/#method_not
@@ -133,7 +124,7 @@ export interface IMemberExpression {
   fieldId?: number;
   fieldName?: string;
   fieldCode?: string;
-  fieldType?: IFieldType;
+  fieldType?: IRuleFieldType;
   value?: string | any;
 }
 
@@ -141,7 +132,7 @@ export interface IRuleGroupNode {
   id: number;
   parentId?: number;
   type: IRuleNodeType.GROUP;
-  relation?: IRelation,
+  relation?: IRuleGroupNodeRelation | IFormulaGroupNodeRelation,
   children?: (IRuleConditionNode | IRuleGroupNode)[];
 }
 
@@ -170,14 +161,17 @@ export type ISetter =
   React.ReactElement
 
 export interface IRuleField {
+  /** 唯一标识。TODO 似乎会导致数据转换非常麻烦。 */
   id: number;
   name: string;
   code: string;
-  type?: IFieldType;
+  tooltip?: any;
+  type?: IRuleFieldType;
   /** 配置项的设置器 */
   setter?: ISetter;
   /** 针对设置器的配置 */
   setterProps?: { [key: string]: any; };
 }
 
-export type IFieldType = 'BOOLEAN' |'NUMBER' |'STRING' |'DATE' |'DATETIME' | 'COLLECTION' | string
+// MO FIXED IFieldType => IRuleFieldType，需要暴露这个类型声明吗？不需要，减少顶层概念的数量
+export type IRuleFieldType = 'BOOLEAN' | 'NUMBER' | 'STRING' | 'DATE' | 'DATETIME' | 'COLLECTION' | string

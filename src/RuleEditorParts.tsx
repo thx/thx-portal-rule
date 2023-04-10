@@ -1,9 +1,9 @@
-import { IRuleGroupNode, IRuleConditionNode, IRelation, IRuleNodeType, IExpressionType } from './types/index'
-import { uuid } from './shared'
+import { IRuleGroupNode, IRuleConditionNode, IRuleGroupNodeRelation, IRuleNodeType, IExpressionType, IFormulaGroupNodeRelation } from './types/index'
+import { uuid } from './shared/index'
 import styled from 'styled-components'
 import { Select } from '@alifd/next'
 
-export function fixContent (content: IRuleGroupNode, defaultGroupRelation: IRelation) {
+export function fixContent (content: IRuleGroupNode, defaultRelation: IRuleGroupNodeRelation | IFormulaGroupNodeRelation) {
   let changed = false
   if (!content) {
     content = {
@@ -21,7 +21,9 @@ export function fixContent (content: IRuleGroupNode, defaultGroupRelation: IRela
     changed = true
   }
   if (!content.relation) {
-    content.relation = defaultGroupRelation || IRelation.AND
+    // MO FIXED defaultGroupRelation => defaultRelation
+    // 似乎应该是 defaultRuleGroupNodeRelation，含义更完整，但是会增加使用成本。
+    content.relation = defaultRelation || IRuleGroupNodeRelation.AND
     changed = true
   }
   if (!content.children || !content.children.length) {

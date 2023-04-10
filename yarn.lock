@@ -10,16 +10,16 @@
     "@alifd/validate" "^1.2.0"
     prop-types "^15.5.8"
 
-"@alifd/next@^1.25.45":
-  version "1.25.45"
-  resolved "https://registry.yarnpkg.com/@alifd/next/-/next-1.25.45.tgz#3287843e549200cddea0182c4337e32d9eaf6e60"
-  integrity sha512-8GSsZ5gbM1WI1cgc0gYhRTuIzx39EjWojm8JSsUerRnaThorcJ+4Oc+eEJh9pszZEsZtFGOA2+fR1FYALh2GcQ==
+"@alifd/next@^1.26.15":
+  version "1.26.15"
+  resolved "https://registry.npm.alibaba-inc.com/@alifd/next/download/@alifd/next-1.26.15.tgz#d3f1a11a68ef19e5f8db58ab233ea14c83f9a58c"
+  integrity sha512-P3wn445MpvVEuWlngNAtiake3lppj5yoNl9/hoEEJOR2di5Zabs8nbxQFNCXgxfcX6acuXAfKJ1y9/wDjX9Tsw==
   dependencies:
     "@alifd/field" "~1.5.5"
     "@alifd/overlay" "^0.2.9"
     "@alifd/validate" "~1.2.0"
     babel-runtime "^6.26.0"
-    bignumber.js "^9.0.1"
+    big.js "^6.2.0"
     classnames "^2.2.3"
     dayjs "^1.9.6"
     hoist-non-react-statics "^3.0.0"
@@ -1267,15 +1267,24 @@
 
 "@types/react-dom@^18.0.6":
   version "18.0.6"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.6.tgz#36652900024842b74607a17786b6662dd1e103a1"
+  resolved "https://registry.npm.alibaba-inc.com/@types/react-dom/download/@types/react-dom-18.0.6.tgz#36652900024842b74607a17786b6662dd1e103a1"
   integrity sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^18.0.15":
+"@types/react@*":
   version "18.0.15"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.15.tgz#d355644c26832dc27f3e6cbf0c4f4603fc4ab7fe"
   integrity sha512-iz3BtLuIYH1uWdsv6wXYdhozhqj20oD4/Hk2DNXIn1kFsmp9x8d9QB6FnPhfkbhd2PgEONt9Q1x/ebkwjfFLow==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^18.0.15":
+  version "18.0.21"
+  resolved "https://registry.npm.alibaba-inc.com/@types/react/download/@types/react-18.0.21.tgz#b8209e9626bb00a34c76f55482697edd2b43cc67"
+  integrity sha512-7QUCOxvFgnD5Jk8ZKlUAhVcRj7GuJRjnjjiY/IUBWKgOlnvDvTMLD4RTF7NPyVmbRhNrbomZiOepg7M/2Kj1mA==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -1771,10 +1780,10 @@ big.js@^5.2.2:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
-bignumber.js@^9.0.1:
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.2.tgz#71c6c6bed38de64e24a65ebe16cfcf23ae693673"
-  integrity sha512-GAcQvbpsM0pUb0zw1EI0KhQEZ+lRwR5fYaAp3vPOYuP7aDvGy6cVN6XHLauvF8SOga2y0dcLcjt3iQDTSEliyw==
+big.js@^6.2.0:
+  version "6.2.1"
+  resolved "https://registry.npm.alibaba-inc.com/big.js/download/big.js-6.2.1.tgz#7205ce763efb17c2e41f26f121c420c6a7c2744f"
+  integrity sha512-bCtHMwL9LeDIozFn+oNhhFoq+yQ3BNdnsLSASUxLciOb1vgvpHsIO1dsENiGMgbb4SkP5TrzWzRiLddn8ahVOQ==
 
 binary-extensions@^1.0.0:
   version "1.13.1"

@@ -1,10 +1,11 @@
 {
-  "name": "@ali/thx-portal-rule",
-  "version": "0.0.1-alpha.14",
+  "name": "thx-portal-rule",
+  "version": "0.0.1-alpha.21",
   "description": "MM 可视化规则编辑器",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
+    "start": "npm-run-all -p dev:tsc dev:umd examples:start",
     "========== dev ==========": "",
     "dev": "npm-run-all -p dev:tsc dev:umd",
     "dev:tsc": "tsc --watch --pretty --preserveWatchOutput --project tsconfig.json",
@@ -21,23 +22,23 @@
     "link:react-guide-app": "cd examples/react-guide-app && yarn link thx-portal-rule",
     "========== release ==========": "",
     "release": "standard-version",
-    "alpha": "npm run release -- --release-as prerelease",
+    "alpha": "yarn run build; npm run release -- --release-as prerelease;",
     "contributors": "ali-contributors",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "========== release tnpm ==========": "",
     "daily:def": "def publish --daily",
     "publish:def": "def publish --prod; yarn run build; tnpm publish;",
-    "publish:tnpm": "npm version patch; git add package.json; git commit -m 'publish: tnpm'; yarn run build; tnpm publish;",
-    "publish:tnpm:alpha": "npm version prerelease; git add package.json; git commit -m 'publish: tnpm'; yarn run build; tnpm publish;"
+    "publish:tnpm": "npm version patch; git add package.json; git commit -m 'publish: tnpm'; git push; yarn run build; tnpm publish;",
+    "publish:tnpm:alpha": "npm version prerelease; git add package.json; git commit -m 'publish: tnpm'; git push; yarn run build; tnpm publish;"
   },
   "dependencies": {
-    "@alifd/next": "^1.25.45",
     "moment": "^2.29.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "styled-components": "^4.3.2"
   },
   "devDependencies": {
+    "@alifd/next": "^1.26.15",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@types/styled-components": "^5.1.25",
@@ -56,8 +57,5 @@
     "README.md",
     "tsconfig.json",
     "yarn.lock"
-  ],
-  "publishConfig": {
-    "registry": "https://registry.npm.alibaba-inc.com"
-  }
+  ]
 }

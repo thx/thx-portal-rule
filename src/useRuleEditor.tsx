@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { uuid } from './shared'
+import { uuid } from './shared/index'
 import { tree2map, fixContent } from './RuleEditorParts'
-import { IRuleConditionNode, IRuleGroupNode, IRelation, IRuleNodeType, IExpressionType } from './types'
+import { IRuleConditionNode, IRuleGroupNode, IRuleGroupNodeRelation, IRuleNodeType, IExpressionType, IFormulaGroupNodeRelation } from './types'
 
-export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultGroupRelation?: IRelation) {
+export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultRelation?: IRuleGroupNodeRelation | IFormulaGroupNodeRelation) {
   const [content, setContent] = useState<IRuleGroupNode>(remoteContent)
   useEffect(() => {
-    const { content: nextContent, changed } = fixContent(content, defaultGroupRelation)
+    const { content: nextContent, changed } = fixContent(content, defaultRelation)
     if (changed) setContent({ ...nextContent })
   }, [])
   const [mapped, setMapped] = useState<{ [id: string]: IRuleConditionNode | IRuleGroupNode }>({})
@@ -23,7 +23,7 @@ export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultGro
       right: { type: IExpressionType.LITERAL, value: '' },
       operator: undefined // IRuleConditionOperator.EQUAL
     })
-    // onChange() // MO TODO
+    // onChange() // MO FIXED 不在这里触发
   }, [mapped])
 
   const appendSibling = useCallback((child: IRuleConditionNode) => {
@@ -38,7 +38,7 @@ export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultGro
         operator: undefined
       })
     }
-    // onChange() // MO TODO
+    // onChange() // MO FIXED 不在这里触发
   }, [mapped])
 
   const appendGroupWithChild = useCallback((child: IRuleConditionNode) => {
@@ -48,7 +48,7 @@ export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultGro
       const nextGroup: IRuleGroupNode = {
         id: uuid(),
         type: IRuleNodeType.GROUP,
-        relation: defaultGroupRelation || IRelation.AND,
+        relation: defaultRelation || IRuleGroupNodeRelation.AND,
         children: []
       }
       child.parentId = nextGroup.id
@@ -64,7 +64,7 @@ export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultGro
       )
       parent.children.splice(childIndex, 1, nextGroup)
     }
-    // onChange() // MO TODO
+    // onChange() // MO FIXED 不在这里触发
   }, [mapped])
 
   const removeChild = useCallback((child: IRuleConditionNode) => {
