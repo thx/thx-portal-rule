@@ -57,8 +57,5 @@
     "README.md",
     "tsconfig.json",
     "yarn.lock"
-  ],
-  "publishConfig": {
-    "registry": "https://registry.npm.alibaba-inc.com"
-  }
+  ]
 }
