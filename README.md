@@ -1,6 +1,6 @@
-# MM Portal Rule
+# THX Portal Rule
 
-MM 可视化规则编辑器。
+THX 可视化规则编辑器。
 
 ![](./docs/screenshot.png)
 
