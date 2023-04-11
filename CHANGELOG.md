@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1-alpha.22](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.21...v0.0.1-alpha.22) (2023-04-11)
+
+
+### Features
+
+* [#4](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/issues/4) 支持更多操作符生成代码 ([f76411f](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/f76411f7c1d87f579330daf5fda8b0d4a8b680e3))
+* 优化model和field和operator的联动关系逻辑 ([1c2e741](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/commit/1c2e741fda54cd5c551d4631e419aa7a2ab91b0e))
+
 ### [0.0.1-alpha.21](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.20...v0.0.1-alpha.21) (2023-04-10)
 
 ### [0.0.1-alpha.20](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.19...v0.0.1-alpha.20) (2022-11-16)
