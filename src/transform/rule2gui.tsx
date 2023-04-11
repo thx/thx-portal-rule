@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Tag } from '@alifd/next'
-import { IExpressionType, IRuleConditionNode, IRuleGroupNode, IRuleNodeType, RuleConditionOperatorMap } from '../types/index'
-import { FORMULA_RELATION_LIST, RULE_RELATION_LIST } from '../shared/index'
+import { IExpressionType, IRuleConditionNode, IRuleGroupNode, IRuleNodeType } from '../types/index'
+import { FORMULA_RELATION_LIST, RuleConditionOperatorMap, RULE_RELATION_LIST } from '../shared/index'
 
 function condition2gui (node: IRuleConditionNode) {
   return <Box direction='row' spacing={4} wrap>

@@ -3,17 +3,20 @@
 
 import React from 'react'
 
+/** 规则节点类型 */
 export enum IRuleNodeType {
   GROUP = 'GROUP',
   CONDITION = 'CONDITION'
 }
 
 // MO FIXED 似乎应该是 IRuleGroupNodeRelation
+/** 规则分组节点之间的关系 */
 export enum IRuleGroupNodeRelation {
   AND = 'AND',
   OR = 'OR'
 }
 
+/** 公式分组节点之间的关系 */
 export enum IFormulaGroupNodeRelation {
   ADD = 'ADD',
   SUBTRACT = 'SUBTRACT',
@@ -23,6 +26,7 @@ export enum IFormulaGroupNodeRelation {
 
 // MO TODO https://www.chaijs.com/api/bdd/#method_not
 // Quantifiers asterisk *
+/** 操作符 */
 export enum IRuleConditionOperator {
   EQUAL = 'EQUAL', // 等于
   NOT_EQUAL = 'NOT_EQUAL', // 不等于
@@ -62,45 +66,19 @@ export enum IRuleConditionOperator {
 
 }
 
+/** 操作符集合 */
 export interface IOperatorMap {
-  [type: string]: IOperatorMapItem[];
+  [fieldType: string]: IOperatorMapItem[];
 }
 
+/** 单个操作符 */
 export interface IOperatorMapItem {
   label: string;
   value: IRuleConditionOperator | any;
+  code?: (node: IRuleConditionNode, left: string, right: string) => string;
 }
 
-export const RuleConditionOperatorMap: {
-  [type: string]: IOperatorMapItem
-} = {
-  EQUAL: { label: '等于', value: IRuleConditionOperator.EQUAL },
-  NOT_EQUAL: { label: '不等于', value: IRuleConditionOperator.NOT_EQUAL },
-  LESS_THAN: { label: '小于', value: IRuleConditionOperator.LESS_THAN },
-  LESS_THAN_OR_EQUAL: { label: '小于等于', value: IRuleConditionOperator.LESS_THAN_OR_EQUAL },
-  GREATER_THAN: { label: '大于', value: IRuleConditionOperator.GREATER_THAN },
-  GREATER_THAN_OR_EQUAL: { label: '大于等于', value: IRuleConditionOperator.GREATER_THAN_OR_EQUAL },
-
-  INCLUDE: { label: '包含', value: IRuleConditionOperator.INCLUDE },
-  NOT_INCLUDE: { label: '不包含', value: IRuleConditionOperator.NOT_INCLUDE },
-
-  WITHIN: { label: '在之间', value: IRuleConditionOperator.WITHIN },
-  NOT_WITHIN: { label: '在之外', value: IRuleConditionOperator.NOT_WITHIN },
-
-  BEGIN_WITH: { label: '以开头', value: IRuleConditionOperator.BEGIN_WITH },
-  END_WITH: { label: '以结尾', value: IRuleConditionOperator.END_WITH },
-
-  MATCH: { label: '匹配', value: IRuleConditionOperator.MATCH },
-  NOT_MATCH: { label: '不匹配', value: IRuleConditionOperator.NOT_MATCH },
-
-  ONE_OF: { label: '成员', value: IRuleConditionOperator.ONE_OF },
-  MEMBERS: { label: '成员', value: IRuleConditionOperator.MEMBERS },
-
-  CHANGE: { label: '改变', value: IRuleConditionOperator.CHANGE },
-  NOT_CHANGE: { label: '不改变', value: IRuleConditionOperator.NOT_CHANGE }
-
-}
-
+/** 表达式右侧类型 */
 export enum IRuleMode {
   LITERAL = 'LITERAL',
   MODEL = 'MODEL'
@@ -174,4 +152,4 @@ export interface IRuleField {
 }
 
 // MO FIXED IFieldType => IRuleFieldType，需要暴露这个类型声明吗？不需要，减少顶层概念的数量
-export type IRuleFieldType = 'BOOLEAN' | 'NUMBER' | 'STRING' | 'DATE' | 'DATETIME' | 'COLLECTION' | string
+export type IRuleFieldType = '*' | 'BOOLEAN' | 'NUMBER' | 'STRING' | 'DATE' | 'DATETIME' | 'COLLECTION' | string

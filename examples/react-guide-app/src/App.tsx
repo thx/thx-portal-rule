@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Box, Divider, Input } from '@alifd/next'
-import { RuleEditor, IRuleGroupNode, FormulaEditor, IRuleGroupNodeRelation, rule2expression, rule2function, rule2data, rule2gui } from 'thx-portal-rule'
+import { RuleEditor, IRuleGroupNode, FormulaEditor, IRuleGroupNodeRelation, rule2expression, rule2function, rule2data, rule2gui, IRuleModel } from 'thx-portal-rule'
 import { MOCK_CONTENT, MOCK_CONTENT_SIMPLE_1, MOCK_CONTENT_SIMPLE_2, MOCK_CONTENT_SIMPLE_3, MOCK_FORMULA, MOCK_FORMULA_SIMPLE_1, MOCK_MODEL_LIST } from './model'
 import './App.scss'
 
@@ -91,7 +91,7 @@ function useExample (rule: IRuleGroupNode) {
   return { expression, fn, context, setContext, result }
 }
 
-function What ({ content, ...extra }: { content: IRuleGroupNode }) {
+function What ({ models, content, ...extra }: { models: IRuleModel[]; content: IRuleGroupNode }) {
   const { expression, fn, context, setContext, result } = useExample(content)
   return <Box {...extra} direction='column' spacing={16}>
     <Box direction='row' spacing={16}>
@@ -122,6 +122,12 @@ function What ({ content, ...extra }: { content: IRuleGroupNode }) {
       </Box>
     </Box>
     <Box direction='row' spacing={16}>
+      <Box flex={[0, 1, '50%']} style={{ overflow: 'auto' }} spacing={4}>
+        <b>模型 JSON</b>
+        <PreWrapper>
+          <pre style={{ whiteSpace: 'break-spaces' }}>{JSON.stringify(models, null, 2)}</pre>
+        </PreWrapper>
+      </Box>
       <Box flex={[0, 1, '50%']} style={{ overflow: 'auto' }} spacing={4}>
         <b>规则 JSON</b>
         <PreWrapper>
@@ -157,7 +163,7 @@ function RuleExamples ({ value }: { value: IRuleGroupNode }) {
         // operatorSelectProps={{ style: { width: 100 } }}
       />
     </EditorWrapper>
-    <What content={content} />
+    <What models={MOCK_MODEL_LIST} content={content} />
   </Box>
 }
 
@@ -171,7 +177,7 @@ function FormulaExamples ({ value }: { value: IRuleGroupNode; }) {
         onChange={(nextContent) => setContent(nextContent)}
       />
     </EditorWrapper>
-    <What content={content} />
+    <What models={MOCK_MODEL_LIST} content={content} />
   </Box>
 }
 

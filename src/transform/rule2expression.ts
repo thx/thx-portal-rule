@@ -1,5 +1,5 @@
-import { FORMULA_RELATION_LIST, RULE_RELATION_LIST } from '../shared/index'
-import { IExpressionType, IRuleConditionNode, IRuleConditionOperator, IRuleGroupNode, IRuleNodeType } from '../types/index'
+import { FORMULA_RELATION_LIST, OPERATOR_TYPE_MAP, RULE_RELATION_LIST } from '../shared/index'
+import { IExpressionType, IOperatorMap, IOperatorMapItem, IRuleConditionNode, IRuleConditionOperator, IRuleGroupNode, IRuleNodeType } from '../types/index'
 
 // MO TODO 以下内容参考自 src/pages/sha/indicators/IndicatorTable.tsx
 
@@ -10,8 +10,6 @@ function literal2code (value) {
         : value
 }
 
-// MO TODO 支持更多操作符
-// MO TODO formula => expression
 function condition2expression (node: IRuleConditionNode, context = '') {
   const result: string[] = []
   // 左侧 模型.字段
@@ -39,6 +37,23 @@ function condition2expression (node: IRuleConditionNode, context = '') {
     )
     : ''
   if (node.operator) result.push(rightExpression)
+
+  // 左侧字段的类型和中间的操作符，决定了表达式的生成方式
+  // MO TODO 左侧字段类型
+  // MO TODO 支持更多操作符
+  if (OPERATOR_TYPE_MAP[node.left.fieldType || '*']) {
+    const currentOperatorMap: IOperatorMap = OPERATOR_TYPE_MAP // operatorMap || OPERATOR_TYPE_MAP
+    const dataSource: IOperatorMapItem[] = currentOperatorMap[node.left.fieldType || '*'] || currentOperatorMap['*']
+    const operatorItem: IOperatorMapItem = dataSource.find(item => item.value === node.operator)
+    if (operatorItem?.code) {
+      return [
+        '(',
+        operatorItem.code(node, leftExpression, rightExpression),
+        ')'
+      ].join(' ')
+    }
+  }
+
   return [
     '(',
     ...result,
