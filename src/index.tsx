@@ -5,7 +5,7 @@ export { rule2expression } from './transform/rule2expression'
 export { rule2function } from './transform/rule2function'
 export { rule2data } from './transform/rule2data'
 export { rule2gui } from './transform/rule2gui'
-export { tree2map } from './RuleEditorParts'
+export { tree2map } from './transform/tree2map'
 
 /** 规则编辑器 */
 export { default as RuleEditor } from './RuleEditor'

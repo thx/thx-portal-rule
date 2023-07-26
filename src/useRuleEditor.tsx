@@ -1,7 +1,48 @@
 import { useCallback, useEffect, useState } from 'react'
 import { uuid } from './shared/index'
-import { tree2map, fixContent } from './RuleEditorParts'
+import { tree2map } from './transform/tree2map'
 import { IRuleConditionNode, IRuleGroupNode, IRuleGroupNodeRelation, IRuleNodeType, IExpressionType, IFormulaGroupNodeRelation } from './types'
+
+export function fixContent (content: IRuleGroupNode, defaultRelation: IRuleGroupNodeRelation | IFormulaGroupNodeRelation) {
+  let changed = false
+  if (!content) {
+    content = {
+      id: uuid(),
+      type: IRuleNodeType.GROUP
+    }
+    changed = true
+  }
+  if (!content.id) {
+    content.id = uuid()
+    changed = true
+  }
+  if (!content.type) {
+    content.type = IRuleNodeType.GROUP
+    changed = true
+  }
+  if (!content.relation) {
+    // MO FIXED defaultGroupRelation => defaultRelation
+    // 似乎应该是 defaultRuleGroupNodeRelation，含义更完整，但是会增加使用成本。
+    content.relation = defaultRelation || IRuleGroupNodeRelation.AND
+    changed = true
+  }
+  if (!content.children || !content.children.length) {
+    content.children = [
+      {
+        id: uuid(),
+        type: IRuleNodeType.CONDITION,
+        left: {
+          type: IExpressionType.MODEL
+        },
+        right: {
+          type: IExpressionType.LITERAL
+        }
+      }
+    ]
+    changed = true
+  }
+  return { content, changed }
+}
 
 export default function useRuleEditor (remoteContent: IRuleGroupNode, defaultRelation?: IRuleGroupNodeRelation | IFormulaGroupNodeRelation) {
   const [content, setContent] = useState<IRuleGroupNode>(remoteContent)
