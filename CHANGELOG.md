@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1-alpha.23](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.22...v0.0.1-alpha.23) (2023-07-26)
+
 ### [0.0.1-alpha.22](https://gitlab.alibaba-inc.com/mmfs/thx-portal-rule/compare/v0.0.1-alpha.21...v0.0.1-alpha.22) (2023-04-11)
 
 
